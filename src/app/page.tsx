@@ -11,6 +11,7 @@ import { ACTIVITY_CATEGORY_LABELS } from "@/lib/types";
 import { formatDisplayDate, greetingForHour, lastNDates, todayIso } from "@/lib/utils/date";
 import { pickVerseForDate } from "@/data/verses";
 import { GUIDE_PHRASES } from "@/data/catalog";
+import { streakWithoutEpisodes } from "@/lib/utils/labels";
 
 export default function DashboardPage() {
   const { ready, data, ensureTodayActivity, getActivityForDate, getPrayerForDate, getCheckinForDate } = useApp();
@@ -21,6 +22,10 @@ export default function DashboardPage() {
   const activity = getActivityForDate(date);
   const prayer = getPrayerForDate(date);
   const hour = new Date().getHours();
+  const streak = useMemo(
+    () => streakWithoutEpisodes(data.checkins, data.preferences.relapseDefinition),
+    [data.checkins, data.preferences.relapseDefinition],
+  );
 
   useEffect(() => {
     if (!ready) return;
@@ -253,6 +258,16 @@ export default function DashboardPage() {
           </div>
         ) : null}
 
+        {streak > 0 ? (
+          <div className="quiet-panel">
+            <p className="text-xs uppercase tracking-[0.16em] text-fg-muted">Giorni senza episodi</p>
+            <p className="mt-2 font-[family-name:var(--font-fraunces)] text-3xl text-brand-deep">{streak}</p>
+            <p className="mt-1 text-sm text-fg-muted">
+              Consecutivi nei check-in registrati. Gli impulsi involontari non spezzano questa serie.
+            </p>
+          </div>
+        ) : null}
+
         {vulnerableHint ? (
           <div className="rounded-[var(--radius)] bg-accent-soft/70 px-4 py-3 text-sm text-[color:var(--brand-deep)]">
             {vulnerableHint}
@@ -268,6 +283,11 @@ export default function DashboardPage() {
           <Link href="/report/mensile">
             <Button variant="secondary" className="w-full">
               Report mensile
+            </Button>
+          </Link>
+          <Link href="/diario" className="sm:col-span-2">
+            <Button variant="ghost" className="w-full">
+              Storico diario
             </Button>
           </Link>
         </div>

@@ -19,11 +19,23 @@ export default function ImpostazioniPage() {
 }
 
 function ImpostazioniForm({ initialName }: { initialName: string }) {
-  const { data, updatePreferences, exportData, importData, wipeData, upsertIfThenPlan, deleteIfThenPlan } =
-    useApp();
+  const {
+    data,
+    updatePreferences,
+    exportData,
+    importData,
+    wipeData,
+    upsertIfThenPlan,
+    deleteIfThenPlan,
+    upsertCustomStrategy,
+    deleteCustomStrategy,
+  } = useApp();
   const [name, setName] = useState(initialName);
   const [ifCondition, setIfCondition] = useState("noto che sto prendendo il telefono per una ricerca");
   const [thenAction, setThenAction] = useState("lo poso fuori portata e mi alzo");
+  const [strategyName, setStrategyName] = useState("");
+  const [strategyDesc, setStrategyDesc] = useState("");
+  const [limitations, setLimitations] = useState(data.preferences.physicalLimitations);
   const [message, setMessage] = useState("");
   const [notifMsg, setNotifMsg] = useState("");
 
@@ -83,6 +95,32 @@ function ImpostazioniForm({ initialName }: { initialName: string }) {
             </button>
           ))}
         </div>
+      </Card>
+
+      <Card>
+        <label className="font-semibold" htmlFor="limits">
+          Limiti fisici o condizioni da rispettare
+        </label>
+        <p className="mt-1 text-sm text-fg-muted">
+          Es. non posso fare passeggiate lunghe, evito piegamenti. L&apos;attività di oggi te lo ricorderà.
+        </p>
+        <textarea
+          id="limits"
+          className="mt-3 min-h-20 w-full rounded-2xl border border-line bg-bg px-4 py-3"
+          value={limitations}
+          onChange={(e) => setLimitations(e.target.value)}
+          placeholder="Facoltativo"
+        />
+        <Button
+          className="mt-3 w-full"
+          variant="secondary"
+          onClick={async () => {
+            await updatePreferences({ physicalLimitations: limitations.trim() });
+            setMessage("Limiti salvati.");
+          }}
+        >
+          Salva limiti
+        </Button>
       </Card>
 
       <Card>
@@ -178,6 +216,55 @@ function ImpostazioniForm({ initialName }: { initialName: string }) {
                 Se {p.ifCondition}, allora {p.thenAction}
               </span>
               <button type="button" className="text-brand" onClick={() => void deleteIfThenPlan(p.id)}>
+                Elimina
+              </button>
+            </li>
+          ))}
+        </ul>
+      </Card>
+
+      <Card>
+        <h3 className="font-semibold">Strategie personali</h3>
+        <p className="mt-1 text-sm text-fg-muted">
+          Appariranno insieme alle strategie predefinite nel check-in.
+        </p>
+        <input
+          className="mt-3 w-full rounded-2xl border border-line bg-bg px-4 py-3"
+          value={strategyName}
+          onChange={(e) => setStrategyName(e.target.value)}
+          placeholder="Nome strategia"
+        />
+        <input
+          className="mt-2 w-full rounded-2xl border border-line bg-bg px-4 py-3"
+          value={strategyDesc}
+          onChange={(e) => setStrategyDesc(e.target.value)}
+          placeholder="Breve descrizione (facoltativa)"
+        />
+        <Button
+          className="mt-3 w-full"
+          variant="secondary"
+          onClick={async () => {
+            if (!strategyName.trim()) return;
+            await upsertCustomStrategy({
+              name: strategyName.trim(),
+              description: strategyDesc.trim() || "Strategia personale",
+              category: "custom",
+            });
+            setStrategyName("");
+            setStrategyDesc("");
+            setMessage("Strategia personale salvata.");
+          }}
+        >
+          Aggiungi strategia
+        </Button>
+        <ul className="mt-4 space-y-2 text-sm text-fg-muted">
+          {data.customStrategies.map((s) => (
+            <li key={s.id} className="flex items-start justify-between gap-3 rounded-xl border border-line p-3">
+              <span>
+                <strong className="text-fg">{s.name}</strong>
+                {s.description ? ` — ${s.description}` : ""}
+              </span>
+              <button type="button" className="text-brand" onClick={() => void deleteCustomStrategy(s.id)}>
                 Elimina
               </button>
             </li>

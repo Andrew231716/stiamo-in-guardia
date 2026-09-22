@@ -1,7 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { pickNextCategory, createDailyActivity } from "@/lib/activities/rotation";
+import {
+  pickNextCategory,
+  createDailyActivity,
+  replaceActivityForDate,
+} from "@/lib/activities/rotation";
 import { ACTIVITY_CATEGORIES } from "@/lib/types";
 import { ACTIVITY_LIBRARY } from "@/data/activities";
+import { streakWithoutEpisodes } from "@/lib/utils/labels";
 
 describe("activity rotation", () => {
   it("has at least 60 activities across 7 categories", () => {
@@ -34,5 +39,30 @@ describe("activity rotation", () => {
     }
     const ids = generated.map((a) => a.templateId);
     expect(new Set(ids).size).toBeGreaterThan(5);
+  });
+
+  it("replaceActivityForDate yields a different template when possible", () => {
+    const first = createDailyActivity("2026-03-22", [], []);
+    const { activity: second } = replaceActivityForDate("2026-03-22", [first], []);
+    expect(second.date).toBe("2026-03-22");
+    if (ACTIVITY_LIBRARY.length > 1) {
+      expect(second.templateId).not.toBe(first.templateId);
+    }
+  });
+});
+
+describe("streakWithoutEpisodes", () => {
+  it("counts consecutive clean check-ins from most recent", () => {
+    const streak = streakWithoutEpisodes(
+      [
+        { date: "2026-03-20", pornographyStatus: "none", masturbationStatus: "none" },
+        { date: "2026-03-21", pornographyStatus: "none", masturbationStatus: "none" },
+        { date: "2026-03-22", pornographyStatus: "episode", masturbationStatus: "none" },
+        { date: "2026-03-23", pornographyStatus: "none", masturbationStatus: "none" },
+        { date: "2026-03-24", pornographyStatus: "none", masturbationStatus: "none" },
+      ],
+      { countPornography: true, countMasturbation: true },
+    );
+    expect(streak).toBe(2);
   });
 });

@@ -17,7 +17,7 @@ import type { ChainStage, DailyCheckin, EpisodeStatus, ImpulseStatus } from "@/l
 import { yesterdayIso } from "@/lib/utils/date";
 
 function CheckInFormInner({ date, existing }: { date: string; existing?: DailyCheckin }) {
-  const { upsertCheckin, deleteCheckin } = useApp();
+  const { upsertCheckin, deleteCheckin, data } = useApp();
 
   const [pornographyStatus, setPornographyStatus] = useState<EpisodeStatus>(existing?.pornographyStatus ?? "none");
   const [masturbationStatus, setMasturbationStatus] = useState<EpisodeStatus>(existing?.masturbationStatus ?? "none");
@@ -34,6 +34,11 @@ function CheckInFormInner({ date, existing }: { date: string; existing?: DailyCh
   const [preventiveAdjustment, setPreventiveAdjustment] = useState(existing?.preventiveAdjustment ?? "");
   const [interruptionPoint, setInterruptionPoint] = useState(existing?.interruptionPoint ?? "");
   const [saved, setSaved] = useState(false);
+
+  const strategies = useMemo(
+    () => [...STRATEGY_CATALOG, ...data.customStrategies],
+    [data.customStrategies],
+  );
 
   const relapse = pornographyStatus === "episode" || masturbationStatus === "episode";
   const needsPatienceFocus = triggers.some((t) =>
@@ -184,7 +189,7 @@ function CheckInFormInner({ date, existing }: { date: string; existing?: DailyCh
       <Card>
         <h3 className="font-semibold">Strategie utilizzate</h3>
         <div className="mt-3 flex flex-wrap gap-2">
-          {STRATEGY_CATALOG.map((s) => (
+          {strategies.map((s) => (
             <button
               key={s.id}
               type="button"
@@ -197,6 +202,11 @@ function CheckInFormInner({ date, existing }: { date: string; existing?: DailyCh
             </button>
           ))}
         </div>
+        {data.customStrategies.length === 0 ? (
+          <p className="mt-2 text-xs text-fg-muted">
+            Puoi aggiungere strategie personali in Impostazioni → Altro.
+          </p>
+        ) : null}
       </Card>
 
       <Card>

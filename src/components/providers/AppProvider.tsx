@@ -24,10 +24,11 @@ import type {
   DailyCheckin,
   IfThenPlan,
   PrayerEntry,
+  StrategyItem,
   UserPreferences,
 } from "@/lib/types";
 import { DEFAULT_PREFERENCES } from "@/lib/types";
-import { ensureActivityForDate } from "@/lib/activities/rotation";
+import { ensureActivityForDate, replaceActivityForDate } from "@/lib/activities/rotation";
 import { todayIso, yesterdayIso } from "@/lib/utils/date";
 import { pickPrayerVerseForDate } from "@/data/verses";
 
@@ -38,6 +39,7 @@ interface AppContextValue {
   refresh: () => Promise<void>;
   updatePreferences: (patch: Partial<UserPreferences>) => Promise<void>;
   ensureTodayActivity: () => Promise<DailyActivityRecord>;
+  replaceTodayActivity: () => Promise<DailyActivityRecord>;
   saveActivityProgress: (
     id: string,
     patch: Partial<Pick<DailyActivityRecord, "personalResponse" | "reflectionAnswer" | "completedAt">>,
@@ -47,6 +49,8 @@ interface AppContextValue {
   upsertPrayer: (patch: Partial<PrayerEntry> & { date: string }) => Promise<PrayerEntry>;
   upsertIfThenPlan: (plan: Omit<IfThenPlan, "id" | "createdAt"> & { id?: string }) => Promise<void>;
   deleteIfThenPlan: (id: string) => Promise<void>;
+  upsertCustomStrategy: (strategy: Omit<StrategyItem, "id"> & { id?: string }) => Promise<void>;
+  deleteCustomStrategy: (id: string) => Promise<void>;
   exportData: () => Promise<string>;
   importData: (json: string) => Promise<void>;
   wipeData: () => Promise<void>;
@@ -133,6 +137,18 @@ export function AppProvider({ children }: { children: ReactNode }) {
       };
       await persist(next);
     }
+    return result.activity;
+  }, [data, persist]);
+
+  const replaceTodayActivity = useCallback(async () => {
+    const date = todayIso();
+    const result = replaceActivityForDate(date, data.activities, data.checkins);
+    const next = {
+      ...data,
+      activities: result.activities,
+      activityHistoryIds: [...data.activityHistoryIds, result.activity.templateId].slice(-60),
+    };
+    await persist(next);
     return result.activity;
   }, [data, persist]);
 
@@ -243,6 +259,30 @@ export function AppProvider({ children }: { children: ReactNode }) {
     [data, persist],
   );
 
+  const upsertCustomStrategy = useCallback(
+    async (strategy: Omit<StrategyItem, "id"> & { id?: string }) => {
+      const existing = strategy.id ? data.customStrategies.find((s) => s.id === strategy.id) : undefined;
+      const record: StrategyItem = {
+        id: existing?.id ?? uuid(),
+        name: strategy.name,
+        description: strategy.description,
+        category: strategy.category || "custom",
+      };
+      const customStrategies = existing
+        ? data.customStrategies.map((s) => (s.id === existing.id ? record : s))
+        : [...data.customStrategies, record];
+      await persist({ ...data, customStrategies });
+    },
+    [data, persist],
+  );
+
+  const deleteCustomStrategy = useCallback(
+    async (id: string) => {
+      await persist({ ...data, customStrategies: data.customStrategies.filter((s) => s.id !== id) });
+    },
+    [data, persist],
+  );
+
   const exportData = useCallback(async () => exportAppDataJson(), []);
   const importData = useCallback(
     async (json: string) => {
@@ -264,12 +304,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
       refresh,
       updatePreferences,
       ensureTodayActivity,
+      replaceTodayActivity,
       saveActivityProgress,
       upsertCheckin,
       deleteCheckin,
       upsertPrayer,
       upsertIfThenPlan,
       deleteIfThenPlan,
+      upsertCustomStrategy,
+      deleteCustomStrategy,
       exportData,
       importData,
       wipeData,
@@ -284,12 +327,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
       refresh,
       updatePreferences,
       ensureTodayActivity,
+      replaceTodayActivity,
       saveActivityProgress,
       upsertCheckin,
       deleteCheckin,
       upsertPrayer,
       upsertIfThenPlan,
       deleteIfThenPlan,
+      upsertCustomStrategy,
+      deleteCustomStrategy,
       exportData,
       importData,
       wipeData,

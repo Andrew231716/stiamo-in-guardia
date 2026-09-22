@@ -31,10 +31,15 @@ export function pickTemplate(
   category: ActivityCategory,
   recentTemplateIds: string[],
   checkins: DailyCheckin[],
+  excludeTemplateIds: string[] = [],
 ): ActivityTemplate {
-  const recent = new Set(recentTemplateIds.slice(-RECENT_TEMPLATE_WINDOW));
+  const recent = new Set([...recentTemplateIds.slice(-RECENT_TEMPLATE_WINDOW), ...excludeTemplateIds]);
   let pool = getActivitiesByCategory(category).filter((t) => !recent.has(t.id));
+  if (!pool.length) {
+    pool = getActivitiesByCategory(category).filter((t) => !excludeTemplateIds.includes(t.id));
+  }
   if (!pool.length) pool = getActivitiesByCategory(category);
+  if (!pool.length) pool = ACTIVITY_LIBRARY.filter((t) => !excludeTemplateIds.includes(t.id));
   if (!pool.length) pool = [...ACTIVITY_LIBRARY];
 
   const triggerCounts = new Map<string, number>();
@@ -46,12 +51,20 @@ export function pickTemplate(
   // Soft preference: templates mentioning vulnerability / phone / prayer when those triggers dominate
   const scored = pool.map((t) => {
     let score = Math.random();
-    const text = `${t.title} ${t.objective} ${t.dailyAction}`.toLowerCase();
+    const text = `${t.title} ${t.objective} ${t.dailyAction} ${t.introduction}`.toLowerCase();
     if (topTriggers.includes("drowsiness") && text.includes("assonn")) score += 0.4;
     if (topTriggers.includes("fatigue") && text.includes("stanch")) score += 0.3;
     if (topTriggers.includes("phone_nearby") && text.includes("telefon")) score += 0.35;
     if (topTriggers.includes("bed_with_phone") && text.includes("letto")) score += 0.35;
     if (topTriggers.includes("boredom") && text.includes("noi")) score += 0.25;
+    if (
+      (topTriggers.includes("marriage_wait") ||
+        topTriggers.includes("frustration") ||
+        topTriggers.includes("discouragement")) &&
+      (text.includes("pazien") || text.includes("matrimon") || text.includes("frustr"))
+    ) {
+      score += 0.4;
+    }
     return { t, score };
   });
   scored.sort((a, b) => b.score - a.score);
@@ -62,11 +75,12 @@ export function createDailyActivity(
   date: string,
   recentActivities: DailyActivityRecord[],
   checkins: DailyCheckin[],
+  options?: { excludeTemplateIds?: string[]; forceCategory?: ActivityCategory },
 ): DailyActivityRecord {
   const recentCategories = recentActivities.map((a) => a.category);
   const recentIds = recentActivities.map((a) => a.templateId);
-  const category = pickNextCategory(recentCategories);
-  const template = pickTemplate(category, recentIds, checkins);
+  const category = options?.forceCategory ?? pickNextCategory(recentCategories);
+  const template = pickTemplate(category, recentIds, checkins, options?.excludeTemplateIds);
   const now = new Date().toISOString();
 
   return {
@@ -98,4 +112,19 @@ export function ensureActivityForDate(
   const recent = [...activities].sort((a, b) => a.date.localeCompare(b.date));
   const activity = createDailyActivity(date, recent, checkins);
   return { activity, activities: [...activities, activity], created: true };
+}
+
+/** Sostituisce l'attività del giorno con un'altra (esclusa quella corrente). */
+export function replaceActivityForDate(
+  date: string,
+  activities: DailyActivityRecord[],
+  checkins: DailyCheckin[],
+): { activity: DailyActivityRecord; activities: DailyActivityRecord[] } {
+  const existing = activities.find((a) => a.date === date);
+  const without = activities.filter((a) => a.date !== date);
+  const recent = [...without].sort((a, b) => a.date.localeCompare(b.date));
+  const activity = createDailyActivity(date, recent, checkins, {
+    excludeTemplateIds: existing ? [existing.templateId] : [],
+  });
+  return { activity, activities: [...without, activity] };
 }

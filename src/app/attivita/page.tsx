@@ -10,10 +10,13 @@ import { ACTIVITY_CATEGORY_LABELS } from "@/lib/types";
 import { todayIso } from "@/lib/utils/date";
 
 function ActivityForm({ activity }: { activity: DailyActivityRecord }) {
-  const { saveActivityProgress } = useApp();
+  const { saveActivityProgress, replaceTodayActivity, data } = useApp();
   const [response, setResponse] = useState(activity.personalResponse ?? "");
   const [reflection, setReflection] = useState(activity.reflectionAnswer ?? "");
   const [saved, setSaved] = useState(Boolean(activity.completedAt));
+  const [draftSaved, setDraftSaved] = useState(false);
+  const [replacing, setReplacing] = useState(false);
+  const limitations = data.preferences.physicalLimitations.trim();
 
   return (
     <div className="space-y-4 animate-fade-up">
@@ -21,6 +24,14 @@ function ActivityForm({ activity }: { activity: DailyActivityRecord }) {
         title={activity.title}
         subtitle={`${ACTIVITY_CATEGORY_LABELS[activity.category]} · circa ${activity.durationMinutes} minuti`}
       />
+
+      {limitations ? (
+        <Card className="border-accent/30 bg-accent-soft/40">
+          <p className="text-sm text-fg-muted">
+            Adatta i passi ai tuoi limiti: <span className="text-fg">{limitations}</span>
+          </p>
+        </Card>
+      ) : null}
 
       <Card>
         <h3 className="font-semibold">Obiettivo</h3>
@@ -92,21 +103,58 @@ function ActivityForm({ activity }: { activity: DailyActivityRecord }) {
         </Card>
       ) : null}
 
-      <Button
-        className="w-full"
-        onClick={async () => {
-          await saveActivityProgress(activity.id, {
-            personalResponse: response,
-            reflectionAnswer: reflection,
-            completedAt: new Date().toISOString(),
-          });
-          setSaved(true);
-        }}
-      >
-        Completa attività
-      </Button>
+      <div className="grid gap-2">
+        <Button
+          className="w-full"
+          onClick={async () => {
+            await saveActivityProgress(activity.id, {
+              personalResponse: response,
+              reflectionAnswer: reflection,
+              completedAt: new Date().toISOString(),
+            });
+            setSaved(true);
+            setDraftSaved(false);
+          }}
+        >
+          Completa attività
+        </Button>
+        <Button
+          variant="secondary"
+          className="w-full"
+          onClick={async () => {
+            await saveActivityProgress(activity.id, {
+              personalResponse: response,
+              reflectionAnswer: reflection,
+            });
+            setDraftSaved(true);
+          }}
+        >
+          Salva bozza
+        </Button>
+        <Button
+          variant="ghost"
+          className="w-full"
+          disabled={replacing || Boolean(activity.completedAt)}
+          onClick={async () => {
+            if (!confirm("Sostituire l'attività di oggi con un'altra? La bozza attuale non verrà tenuta.")) {
+              return;
+            }
+            setReplacing(true);
+            try {
+              await replaceTodayActivity();
+            } finally {
+              setReplacing(false);
+            }
+          }}
+        >
+          {replacing ? "Cambio in corso…" : "Cambia attività di oggi"}
+        </Button>
+      </div>
       {saved ? (
         <p className="text-center text-sm text-ok">Attività registrata. Grazie per il tempo dedicato.</p>
+      ) : null}
+      {draftSaved && !saved ? (
+        <p className="text-center text-sm text-ok">Bozza salvata. Puoi riprendere quando vuoi.</p>
       ) : null}
     </div>
   );
