@@ -46,9 +46,12 @@ export function LogoMark({ className, title = "Stiamo in guardia" }: { className
 export function BrandLockup({
   size = "md",
   showTagline = false,
+  tone = "default",
 }: {
   size?: "sm" | "md" | "lg";
   showTagline?: boolean;
+  /** Su fondi scuri (hero) usa testo chiaro ad alto contrasto. */
+  tone?: "default" | "onDark";
 }) {
   const mark = size === "lg" ? "h-14 w-14" : size === "sm" ? "h-9 w-9" : "h-11 w-11";
   const title =
@@ -57,21 +60,25 @@ export function BrandLockup({
       : size === "sm"
         ? "text-xl"
         : "text-2xl sm:text-3xl";
+  const onDark = tone === "onDark";
 
   return (
     <div className="flex items-center gap-3">
-      <LogoMark className={cn(mark, "animate-logo-breathe")} />
+      <LogoMark className={cn(mark, "animate-logo-breathe drop-shadow-sm")} />
       <div>
         <p
           className={cn(
-            "font-[family-name:var(--font-fraunces)] leading-tight tracking-tight text-brand",
+            "font-[family-name:var(--font-fraunces)] leading-tight tracking-tight",
+            onDark ? "text-white" : "text-brand",
             title,
           )}
         >
           Stiamo in guardia
         </p>
         {showTagline ? (
-          <p className="mt-1 text-sm text-fg-muted">Fermati. Prega. Scegli il passo successivo.</p>
+          <p className={cn("mt-1 text-sm", onDark ? "text-white/80" : "text-fg-muted")}>
+            Fermati. Prega. Scegli il passo successivo.
+          </p>
         ) : null}
       </div>
     </div>

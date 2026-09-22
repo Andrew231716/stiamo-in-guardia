@@ -56,7 +56,7 @@ export default function DashboardPage() {
     return (
       <div className="space-y-4 animate-fade-up">
         <div className="hero-panel">
-          <BrandLockup size="md" />
+          <BrandLockup size="md" tone="onDark" />
           <p className="mt-5 text-lg leading-relaxed text-white/90">
             Se la mano sta andando automaticamente verso il telefono per cercare materiale sessuale, posa il telefono fuori
             portata e alzati. Non aspettare che l&apos;impulso sparisca.
@@ -78,7 +78,7 @@ export default function DashboardPage() {
       {/* First viewport: one composition, brand first */}
       <section className="hero-panel animate-dawn-rise min-h-[58vh] sm:min-h-[52vh]">
         <div className="flex items-start justify-between gap-3">
-          <BrandLockup size="lg" />
+          <BrandLockup size="lg" tone="onDark" />
           <LogoMark className="hidden h-16 w-16 opacity-90 sm:block" />
         </div>
         <p className="mt-8 text-sm capitalize text-white/70">{formatDisplayDate(date)}</p>

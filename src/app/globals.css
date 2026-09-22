@@ -218,7 +218,7 @@ select {
   padding: 1.6rem 1.35rem 1.5rem;
   color: #f4faf7;
   background:
-    linear-gradient(145deg, color-mix(in oklab, var(--brand-deep) 92%, #000) 0%, var(--brand) 58%, #2f7a63 100%);
+    linear-gradient(145deg, #0c2f26 0%, #155744 52%, #1f6b56 100%);
   box-shadow: var(--shadow);
 }
 
