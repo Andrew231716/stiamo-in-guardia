@@ -1,11 +1,18 @@
 "use client";
 
 import { useMemo, useState, Suspense } from "react";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useApp } from "@/components/providers/AppProvider";
 import { Button } from "@/components/ui/Button";
 import { Card, SectionTitle } from "@/components/ui/Card";
-import { GUIDE_PHRASES, STRATEGY_CATALOG, TRIGGER_CATALOG, CHAIN_STAGE_LABELS } from "@/data/catalog";
+import {
+  GUIDE_PHRASES,
+  STRATEGY_CATALOG,
+  TRIGGER_CATALOG,
+  CHAIN_STAGE_LABELS,
+  PATIENCE_FOCUS_TRIGGER_IDS,
+} from "@/data/catalog";
 import type { ChainStage, DailyCheckin, EpisodeStatus, ImpulseStatus } from "@/lib/types";
 import { yesterdayIso } from "@/lib/utils/date";
 
@@ -29,6 +36,9 @@ function CheckInFormInner({ date, existing }: { date: string; existing?: DailyCh
   const [saved, setSaved] = useState(false);
 
   const relapse = pornographyStatus === "episode" || masturbationStatus === "episode";
+  const needsPatienceFocus = triggers.some((t) =>
+    (PATIENCE_FOCUS_TRIGGER_IDS as readonly string[]).includes(t),
+  );
 
   const toggle = (list: string[], id: string, setter: (v: string[]) => void) => {
     setter(list.includes(id) ? list.filter((x) => x !== id) : [...list, id]);
@@ -133,6 +143,27 @@ function CheckInFormInner({ date, existing }: { date: string; existing?: DailyCh
           ))}
         </div>
       </Card>
+
+      {needsPatienceFocus ? (
+        <Card className="border-brand/25 bg-brand-soft/30">
+          <h3 className="font-semibold">Pazienza e focus</h3>
+          <p className="mt-2 text-sm leading-relaxed text-fg-muted">{GUIDE_PHRASES.patienceFocus}</p>
+          <p className="mt-2 text-sm text-fg-muted">{GUIDE_PHRASES.marriagePatience}</p>
+          <p className="mt-3 text-sm text-brand">{GUIDE_PHRASES.frustrationNow}</p>
+          <div className="mt-4 grid gap-2 sm:grid-cols-2">
+            <Link href="/frustrazione">
+              <Button variant="secondary" className="w-full">
+                Apri aiuto immediato
+              </Button>
+            </Link>
+            <Link href="/spiritualita">
+              <Button variant="ghost" className="w-full">
+                Percorso spirituale
+              </Button>
+            </Link>
+          </div>
+        </Card>
+      ) : null}
 
       <Card>
         <h3 className="font-semibold">Punto della sequenza</h3>

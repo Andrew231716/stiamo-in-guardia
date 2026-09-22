@@ -67,6 +67,14 @@ export default function DashboardPage() {
                 Apri modalità semplice
               </Button>
             </Link>
+            <Link href="/frustrazione">
+              <Button
+                variant="secondary"
+                className="w-full border-white/25 bg-white/10 text-white hover:bg-white/18"
+              >
+                Frustrazione o scoraggiamento
+              </Button>
+            </Link>
           </div>
         </div>
       </div>
@@ -111,6 +119,14 @@ export default function DashboardPage() {
             </Button>
           </Link>
         </div>
+        <Link href="/frustrazione" className="mt-3 block">
+          <Button
+            variant="ghost"
+            className="w-full border border-white/20 text-white/90 hover:bg-white/10 hover:text-white"
+          >
+            Mi sento frustrato o scoraggiato
+          </Button>
+        </Link>
       </section>
 
       <section className="space-y-5 animate-fade-up" style={{ animationDelay: "80ms" }}>

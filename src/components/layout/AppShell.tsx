@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import {
   BookOpen,
   CalendarCheck,
-  CircleHelp,
+  Heart,
   Home,
   Moon,
   Settings,
@@ -15,13 +15,14 @@ import { cn } from "@/lib/utils/date";
 import { useApp } from "@/components/providers/AppProvider";
 import { BrandLockup } from "@/components/brand/Logo";
 import { Atmosphere } from "@/components/brand/Atmosphere";
+import { Onboarding } from "@/components/onboarding/Onboarding";
 
 const links = [
   { href: "/", label: "Oggi", icon: Home },
   { href: "/attivita", label: "Attività", icon: Sparkles },
   { href: "/check-in", label: "Check-in", icon: CalendarCheck },
   { href: "/preghiera", label: "Preghiera", icon: BookOpen },
-  { href: "/report", label: "Report", icon: CircleHelp },
+  { href: "/spiritualita", label: "Spirito", icon: Heart },
   { href: "/impostazioni", label: "Altro", icon: Settings },
 ];
 
@@ -34,6 +35,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="relative mx-auto flex min-h-dvh w-full max-w-3xl flex-col px-4 pb-28 pt-5 sm:px-6">
       <Atmosphere />
+      <Onboarding />
       <header className="mb-5 flex items-start justify-between gap-3 animate-fade-up">
         {isHome ? (
           <div className="sr-only">

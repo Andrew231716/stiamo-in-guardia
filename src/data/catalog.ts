@@ -7,6 +7,18 @@ export const TRIGGER_CATALOG: TriggerItem[] = [
   { id: "anxiety", name: "Ansia", category: "internal", description: "Irrequietezza o preoccupazione." },
   { id: "sadness", name: "Tristezza", category: "internal", description: "Umore basso o sconforto." },
   { id: "frustration", name: "Frustrazione", category: "internal", description: "Sensazione di blocco o irritazione." },
+  {
+    id: "marriage_wait",
+    name: "Attesa del matrimonio",
+    category: "internal",
+    description: "Desiderio di sposarsi e frustrazione per l'attesa.",
+  },
+  {
+    id: "discouragement",
+    name: "Scoraggiamento",
+    category: "internal",
+    description: "Senso di sconforto che può abbassare la guardia.",
+  },
   { id: "fatigue", name: "Stanchezza", category: "internal", description: "Energia bassa e minore lucidità." },
   { id: "drowsiness", name: "Sonnolenza", category: "internal", description: "Stato di sonno incompleto o sonnolenza." },
   { id: "restlessness", name: "Irrequietezza", category: "internal", description: "Difficoltà a stare fermi senza stimoli." },
@@ -17,6 +29,18 @@ export const TRIGGER_CATALOG: TriggerItem[] = [
   { id: "low_lucidity_hours", name: "Orari poco lucidi", category: "external", description: "Momenti della giornata in cui ragionare costa più fatica." },
   { id: "habit_environment", name: "Ambiente associato a vecchie abitudini", category: "external", description: "Luoghi o contesti che attivano sequenze automatiche." },
 ];
+
+/** Trigger che possono aprire la guida su pazienza e focus. */
+export const PATIENCE_FOCUS_TRIGGER_IDS = ["frustration", "marriage_wait", "discouragement"] as const;
+
+/** Fasce orarie selezionabili in impostazioni / onboarding. */
+export const VULNERABLE_HOUR_OPTIONS = [
+  { id: "mattina presto", label: "Mattina presto", hint: "prima di essere davvero sveglio" },
+  { id: "pomeriggio", label: "Pomeriggio", hint: "calo di energia o noia" },
+  { id: "sera", label: "Sera", hint: "dopo cena, prima di dormire" },
+  { id: "notte", label: "Notte", hint: "a letto o da soli al buio" },
+  { id: "fine settimana", label: "Fine settimana", hint: "giornate lunghe senza struttura" },
+] as const;
 
 export const STRATEGY_CATALOG: StrategyItem[] = [
   { id: "put_phone_away", name: "Posare il telefono fuori portata", description: "Allontanare fisicamente il dispositivo.", category: "environment" },
@@ -64,4 +88,6 @@ export const GUIDE_PHRASES = {
     "Desidero una moglie e una compagnia fedele. Posso sopportare la frustrazione con pazienza, confidando che Geova conosce i miei bisogni e sa come e quando provvedere nel modo migliore — senza decisioni dettate dalla disperazione.",
   patienceFocus:
     "Se non coltivo pazienza e non mi concentro su altro di buono, la frustrazione può crescere, portare scoraggiamento e abbassare la guardia fino a cedere a impulsi e desideri sbagliati. Meglio riempire oggi la mente e la giornata di cose edificanti.",
+  frustrationNow:
+    "La frustrazione e lo scoraggiamento non sono peccato. Diventano pericolosi quando lasciano la mente vuota o fissata solo sul desiderio. Interrompi ora: prega, muoviti, riempi la mente di qualcosa di buono.",
 };

@@ -48,6 +48,12 @@ export default function StanchezzaPage() {
         </Button>
       </Card>
 
+      <Link href="/frustrazione">
+        <Button variant="secondary" className="w-full">
+          È più frustrazione o scoraggiamento
+        </Button>
+      </Link>
+
       <Link href="/check-in">
         <Button variant="secondary" className="w-full">
           Registra il check-in

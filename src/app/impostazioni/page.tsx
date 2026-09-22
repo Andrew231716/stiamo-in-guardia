@@ -5,21 +5,36 @@ import Link from "next/link";
 import { useApp } from "@/components/providers/AppProvider";
 import { Button } from "@/components/ui/Button";
 import { Card, SectionTitle } from "@/components/ui/Card";
-import { GUIDE_PHRASES } from "@/data/catalog";
+import { GUIDE_PHRASES, VULNERABLE_HOUR_OPTIONS } from "@/data/catalog";
 import { requestNotificationPermission, scheduleLocalReminders } from "@/lib/notifications/reminders";
 
 export default function ImpostazioniPage() {
-  const { ready, data, updatePreferences, exportData, importData, wipeData, upsertIfThenPlan, deleteIfThenPlan } =
+  const { ready, data } = useApp();
+
+  if (!ready) return <p className="text-fg-muted">Caricamento…</p>;
+
+  return (
+    <ImpostazioniForm key={data.preferences.displayName || "anon"} initialName={data.preferences.displayName} />
+  );
+}
+
+function ImpostazioniForm({ initialName }: { initialName: string }) {
+  const { data, updatePreferences, exportData, importData, wipeData, upsertIfThenPlan, deleteIfThenPlan } =
     useApp();
-  const [name, setName] = useState(data.preferences.displayName);
+  const [name, setName] = useState(initialName);
   const [ifCondition, setIfCondition] = useState("noto che sto prendendo il telefono per una ricerca");
   const [thenAction, setThenAction] = useState("lo poso fuori portata e mi alzo");
   const [message, setMessage] = useState("");
   const [notifMsg, setNotifMsg] = useState("");
 
-  if (!ready) return <p className="text-fg-muted">Caricamento…</p>;
-
   const prefs = data.preferences;
+
+  const toggleVulnerableHour = (id: string) => {
+    const next = prefs.vulnerableHours.includes(id)
+      ? prefs.vulnerableHours.filter((h) => h !== id)
+      : [...prefs.vulnerableHours, id];
+    void updatePreferences({ vulnerableHours: next });
+  };
 
   return (
     <div className="space-y-4 animate-fade-up">
@@ -44,6 +59,30 @@ export default function ImpostazioniPage() {
         >
           Salva
         </Button>
+      </Card>
+
+      <Card>
+        <h3 className="font-semibold">Orari vulnerabili</h3>
+        <p className="mt-1 text-sm text-fg-muted">
+          Nei momenti selezionati la home ti ricorda di preparare in anticipo telefono e ambiente.
+        </p>
+        <div className="mt-3 flex flex-wrap gap-2">
+          {VULNERABLE_HOUR_OPTIONS.map((opt) => (
+            <button
+              key={opt.id}
+              type="button"
+              onClick={() => toggleVulnerableHour(opt.id)}
+              className={`rounded-2xl border px-3 py-2 text-left text-sm ${
+                prefs.vulnerableHours.includes(opt.id)
+                  ? "border-brand bg-brand-soft text-brand"
+                  : "border-line"
+              }`}
+            >
+              <span className="font-medium">{opt.label}</span>
+              <span className="mt-0.5 block text-xs opacity-80">{opt.hint}</span>
+            </button>
+          ))}
+        </div>
       </Card>
 
       <Card>
@@ -75,6 +114,9 @@ export default function ImpostazioniPage() {
         </Button>
         <Link href="/stanchezza" className="mt-3 block text-sm text-brand underline">
           Apri schermata semplificata
+        </Link>
+        <Link href="/frustrazione" className="mt-2 block text-sm text-brand underline">
+          Aiuto per frustrazione / scoraggiamento
         </Link>
       </Card>
 
@@ -275,9 +317,9 @@ export default function ImpostazioniPage() {
       </Card>
 
       <div className="grid gap-3 sm:grid-cols-2">
-        <Link href="/spiritualita">
+        <Link href="/report">
           <Button variant="secondary" className="w-full">
-            Spiritualità
+            Report
           </Button>
         </Link>
         <Link href="/fonti">
