@@ -1310,7 +1310,7 @@ export const ACTIVITY_LIBRARY: ActivityTemplate[] = [
   "title": "Desiderio di sposarsi con pazienza",
   "durationMinutes": 12,
   "objective": "Onorare il desiderio di una moglie e di una compagnia fedele, resistendo alla frustrazione e confidando nei tempi di Geova.",
-  "introduction": "Le pubblicazioni JW.org riconoscono il desiderio di sposarsi e invitano a non disperare nell'attesa, continuando a pregare. Ricordano anche che Geova non promette un coniuge a nessuno, ma si interessa dei bisogni e sa il modo migliore di provvedere se il matrimonio è ciò di cui hai bisogno.",
+  "introduction": "Le pubblicazioni JW.org riconoscono il desiderio di sposarsi e invitano a non disperare nell'attesa, continuando a pregare. Ricordano anche che Geova non promette un coniuge a nessuno, ma si interessa dei bisogni e sa il modo migliore di provvedere se il matrimonio è ciò di cui hai bisogno. Se non coltivi pazienza e non ti concentri su altro di buono, la frustrazione può portare scoraggiamento e abbassare la guardia.",
   "scriptureReferences": [
     "Filippesi 4:6, 7",
     "Salmo 145:16",
@@ -1318,15 +1318,44 @@ export const ACTIVITY_LIBRARY: ActivityTemplate[] = [
   ],
   "instructions": [
     "Scrivi onestamente il tuo desiderio di una compagna, senza vergogna.",
-    "Scrivi dove la frustrazione rischia di abbassare la tua guardia.",
+    "Scrivi dove la frustrazione rischia di abbassare la tua guardia o di aprire la porta a impulsi sbagliati.",
+    "Scegli tre cose edificanti su cui concentrarti questa settimana al posto di ruminare l'attesa.",
     "Formula una preghiera di pazienza e fiducia, non di pretesa."
   ],
-  "writingPrompt": "Come posso desiderare il matrimonio e restare paziente, senza lasciare che la frustrazione mi spinga verso ciò che odio?",
-  "reflectionQuestion": "Sto confidando in Geova o sto cercando di forzare una soluzione per disperazione?",
-  "dailyAction": "Quando senti frustrazione per l'attesa, fermati, prega brevemente e scegli un'azione edificante (servizio, amicizia, lavoro utile).",
+  "writingPrompt": "Come posso desiderare il matrimonio, restare paziente e concentrarmi su altro di buono, così la frustrazione non mi spinge a cedere?",
+  "reflectionQuestion": "Sto lasciando che l'attesa riempia tutta la mente, o sto coltivando anche altre fonti di gioia e servizio?",
+  "dailyAction": "Quando senti frustrazione per l'attesa, fermati, prega brevemente e passa subito a una delle tre attività edificanti scelte.",
   "sourceReferences": [
     {
       "title": "Saggi consigli per chi è sposato e per chi non lo è / Sposarsi «solo nel Signore»",
+      "organization": "WOL",
+      "note": "Vedi Fonti — Desiderio di sposarsi e pazienza."
+    }
+  ]
+},
+{
+  "id": "c3-10",
+  "category": "preparare_risposta",
+  "title": "Se arriva la frustrazione dell'attesa",
+  "durationMinutes": 8,
+  "objective": "Preparare un piano se-allora per quando la frustrazione o lo scoraggiamento rischiano di aprire la porta a impulsi sbagliati.",
+  "introduction": "La catena può essere: desiderio di compagnia → frustrazione → scoraggiamento → ricerca di sollievo sbagliato. Interrompila presto con pazienza e un'azione alternativa già scelta.",
+  "scriptureReferences": [
+    "Proverbi 22:3",
+    "Filippesi 4:6, 7",
+    "2 Timoteo 2:22"
+  ],
+  "instructions": [
+    "Scrivi: Se noto frustrazione o scoraggiamento per l'attesa, allora poso il telefono, prego e passo a un'attività già scelta.",
+    "Scegli oggi quell'attività alternativa (breve e realistica).",
+    "Prova il piano una volta a freddo."
+  ],
+  "writingPrompt": "Qual è il mio piano se-allora contro la frustrazione che abbassa la guardia?",
+  "reflectionQuestion": "Riconosco i primi segnali di frustrazione prima che diventino ricerca?",
+  "dailyAction": "Tieni il piano visibile (senza testi espliciti) e usalo alla prima ondata di frustrazione.",
+  "sourceReferences": [
+    {
+      "title": "Saggi consigli per chi è sposato e per chi non lo è",
       "organization": "WOL",
       "note": "Vedi Fonti — Desiderio di sposarsi e pazienza."
     }

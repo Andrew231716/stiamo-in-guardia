@@ -114,11 +114,13 @@ export default function SpiritualitaPage() {
           per provvedere — nei tempi e nei modi giusti.
         </p>
         <p className="mt-3 text-sm font-medium text-brand">{GUIDE_PHRASES.marriagePatience}</p>
+        <p className="mt-2 text-sm text-fg-muted">{GUIDE_PHRASES.patienceFocus}</p>
         <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-fg-muted">
           <li>La frustrazione per l&apos;attesa non deve abbassare la guardia né spingere a decisioni disperate.</li>
+          <li>Quando la mente resta vuota o fissata solo sul desiderio, crescono scoraggiamento e impulsi sbagliati.</li>
+          <li>Concentrarsi su altro di buono (servizio, amicizie, lavoro utile, studio, preghiera) è una protezione pratica.</li>
           <li>Sposarsi «solo nel Signore» protegge meglio di una scelta affrettata.</li>
-          <li>Puoi coltivare una vita piena e felice già ora, mentre aspetti con pazienza.</li>
-          <li>La solitudine si affronta anche con amicizie, servizio e un rapporto forte con Geova — non solo cercando un coniuge.</li>
+          <li>Puoi coltivare una vita piena già ora, mentre aspetti con pazienza.</li>
         </ul>
         <ScriptureList
           className="mt-3"

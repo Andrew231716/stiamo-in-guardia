@@ -121,6 +121,8 @@ export default function DashboardPage() {
           </h3>
           <p className="mt-2 text-sm text-fg-muted">{GUIDE_PHRASES.loveGoodHateEvil}</p>
           <p className="mt-2 text-sm text-fg-muted">{GUIDE_PHRASES.renewMind}</p>
+          <p className="mt-2 text-sm text-fg-muted">{GUIDE_PHRASES.marriagePatience}</p>
+          <p className="mt-2 text-sm text-fg-muted">{GUIDE_PHRASES.patienceFocus}</p>
           <div className="mt-3 flex flex-wrap gap-3">
             <ScriptureLink reference="Romani 12:2" size="sm" />
             <ScriptureLink reference="Romani 12:9" size="sm" />

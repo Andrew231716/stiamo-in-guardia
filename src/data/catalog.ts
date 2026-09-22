@@ -62,4 +62,6 @@ export const GUIDE_PHRASES = {
     "Imparo ad amare ciò che è bene e a odiare ciò che è male. Odio la condotta dannosa, non la mia persona né il mio corpo.",
   marriagePatience:
     "Desidero una moglie e una compagnia fedele. Posso sopportare la frustrazione con pazienza, confidando che Geova conosce i miei bisogni e sa come e quando provvedere nel modo migliore — senza decisioni dettate dalla disperazione.",
+  patienceFocus:
+    "Se non coltivo pazienza e non mi concentro su altro di buono, la frustrazione può crescere, portare scoraggiamento e abbassare la guardia fino a cedere a impulsi e desideri sbagliati. Meglio riempire oggi la mente e la giornata di cose edificanti.",
 };
