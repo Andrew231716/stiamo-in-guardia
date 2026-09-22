@@ -7,6 +7,7 @@ import type { SourceItem } from "@/lib/types";
 const TOPIC_ORDER: NonNullable<SourceItem["topics"]>[number][] = [
   "rinnovare_mente",
   "amare_bene",
+  "matrimonio_pazienza",
   "padronanza",
   "pensieri_casti",
   "tentazione",

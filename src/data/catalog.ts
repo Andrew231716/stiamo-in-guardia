@@ -60,4 +60,6 @@ export const GUIDE_PHRASES = {
   romans129: "Romani 12:9 — Aborrite ciò che è malvagio; attenetevi a ciò che è buono.",
   loveGoodHateEvil:
     "Imparo ad amare ciò che è bene e a odiare ciò che è male. Odio la condotta dannosa, non la mia persona né il mio corpo.",
+  marriagePatience:
+    "Desidero una moglie e una compagnia fedele. Posso sopportare la frustrazione con pazienza, confidando che Geova conosce i miei bisogni e sa come e quando provvedere nel modo migliore — senza decisioni dettate dalla disperazione.",
 };

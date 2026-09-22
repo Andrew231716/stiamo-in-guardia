@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { GUIDE_PHRASES } from "@/data/catalog";
-import { getFeaturedReading } from "@/data/sources";
+import { getFeaturedReading, getSpiritualSourcesByTopic } from "@/data/sources";
 import { Card, SectionTitle } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { ScriptureLink, ScriptureList } from "@/components/bible/ScriptureLink";
@@ -102,6 +102,44 @@ export default function SpiritualitaPage() {
             "2 Pietro 1:5, 6",
           ]}
         />
+      </Card>
+
+      <Card>
+        <h3 className="font-[family-name:var(--font-fraunces)] text-xl">Desiderio di sposarsi e pazienza</h3>
+        <p className="mt-2 text-sm text-fg-muted">
+          Desiderare una moglie e una compagnia fedele è un desiderio umano comprensibile. Secondo le pubblicazioni
+          JW.org, puoi parlarne apertamente a Geova, non disperare nell&apos;attesa e chiedere sostegno emotivo. Allo stesso
+          tempo, le pubblicazioni ricordano con chiarezza che Geova non promette un coniuge a nessuno; però si interessa
+          dei tuoi desideri e dei tuoi bisogni. Se il matrimonio è davvero ciò di cui hai bisogno, sa il modo migliore
+          per provvedere — nei tempi e nei modi giusti.
+        </p>
+        <p className="mt-3 text-sm font-medium text-brand">{GUIDE_PHRASES.marriagePatience}</p>
+        <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-fg-muted">
+          <li>La frustrazione per l&apos;attesa non deve abbassare la guardia né spingere a decisioni disperate.</li>
+          <li>Sposarsi «solo nel Signore» protegge meglio di una scelta affrettata.</li>
+          <li>Puoi coltivare una vita piena e felice già ora, mentre aspetti con pazienza.</li>
+          <li>La solitudine si affronta anche con amicizie, servizio e un rapporto forte con Geova — non solo cercando un coniuge.</li>
+        </ul>
+        <ScriptureList
+          className="mt-3"
+          references={["Filippesi 4:6, 7", "Ebrei 13:6", "Salmo 145:16", "Matteo 6:32", "1 Corinti 7:39"]}
+        />
+        <div className="mt-4 space-y-2">
+          {getSpiritualSourcesByTopic("matrimonio_pazienza")
+            .slice(0, 4)
+            .map((s) => (
+              <a
+                key={s.id}
+                href={s.url}
+                target="_blank"
+                rel="noreferrer"
+                className="block rounded-2xl border border-line px-4 py-3 text-sm hover:border-brand/40"
+              >
+                <span className="font-semibold text-brand-deep">{s.title}</span>
+                <span className="mt-1 block text-xs text-fg-muted">{s.description}</span>
+              </a>
+            ))}
+        </div>
       </Card>
 
       <Card>

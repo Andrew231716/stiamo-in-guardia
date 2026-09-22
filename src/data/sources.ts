@@ -165,6 +165,72 @@ export const SOURCES: SourceItem[] = [
     lastVerifiedAt: "2026-09-22",
   },
   {
+    id: "jw-saggi-sposati-single",
+    title: "Saggi consigli per chi è sposato e per chi non lo è",
+    organization: "Biblioteca online Watchtower",
+    url: "https://wol.jw.org/it/wol/d/r6/lp-i/2011764",
+    sourceType: "spiritual",
+    topics: ["matrimonio_pazienza", "padronanza", "tentazione"],
+    description:
+      "Affronta frustrazione e desiderio di sposarsi: continuare a pregare, non disperare nell'attesa e non prendere decisioni dettate dalla disperazione. Geova dà sostegno emotivo.",
+    lastVerifiedAt: "2026-09-22",
+  },
+  {
+    id: "jw-sposarsi-solo-nel-signore",
+    title: "Sposarsi «solo nel Signore»: È ancora realistico?",
+    organization: "Biblioteca online Watchtower",
+    url: "https://wol.jw.org/it/wol/d/r6/lp-i/402015208",
+    sourceType: "spiritual",
+    topics: ["matrimonio_pazienza", "purezza", "pensieri_casti"],
+    description:
+      "Ricorda che Geova non promette un coniuge a nessuno, ma si interessa dei desideri e dei bisogni; se il matrimonio è ciò di cui hai bisogno, sa il modo migliore per provvedere. Nel frattempo: pregare, resistere e rafforzare l'amicizia con Lui.",
+    lastVerifiedAt: "2026-09-22",
+  },
+  {
+    id: "jw-felici-non-sposati",
+    title: "Felici pur non essendo sposati",
+    organization: "Biblioteca online Watchtower",
+    url: "https://wol.jw.org/it/wol/d/r6/lp-i/2009445",
+    sourceType: "spiritual",
+    topics: ["matrimonio_pazienza"],
+    description:
+      "Aiuta a vivere in modo soddisfacente anche mentre si attende un coniuge adatto, facendo posto nella mente e nel cuore a una vita piena nel servizio a Geova.",
+    lastVerifiedAt: "2026-09-22",
+  },
+  {
+    id: "jw-soluzione-solitudine",
+    title: "Come trovare una soluzione (solitudine e matrimonio)",
+    organization: "Biblioteca online Watchtower",
+    url: "https://wol.jw.org/it/wol/d/r6/lp-i/102010323",
+    sourceType: "spiritual",
+    topics: ["matrimonio_pazienza", "padronanza"],
+    description:
+      "Avverte che il matrimonio non è automaticamente la cura della solitudine; invita a coltivare amicizie e un rapporto forte con Geova già da single.",
+    lastVerifiedAt: "2026-09-22",
+  },
+  {
+    id: "jw-persona-giusta",
+    title: "È la persona giusta per me?",
+    organization: "Biblioteca online Watchtower",
+    url: "https://wol.jw.org/it/wol/d/r6/lp-i/1102008093",
+    sourceType: "spiritual",
+    topics: ["matrimonio_pazienza"],
+    description:
+      "Aiuta a valutare con calma spiritualità e carattere, senza precipitarsi per apparenze o pressione emotiva.",
+    lastVerifiedAt: "2026-09-22",
+  },
+  {
+    id: "jw-matrimonio-dono",
+    title: "Il matrimonio, un dono del nostro amorevole Dio",
+    organization: "Biblioteca online Watchtower",
+    url: "https://wol.jw.org/it/wol/d/r6/lp-i/1102008069",
+    sourceType: "spiritual",
+    topics: ["matrimonio_pazienza", "purezza"],
+    description:
+      "Presenta il matrimonio come dono di Geova e ricorda che la felicità non dipende esclusivamente dall'avere un coniuge; chi aspetta di sposarsi «solo nel Signore» merita rispetto.",
+    lastVerifiedAt: "2026-09-22",
+  },
+  {
     id: "jw-abitudini-dipendenze",
     title: "Cattive abitudini e dipendenze — aiuto dalla Bibbia",
     organization: "JW.org",
@@ -252,6 +318,7 @@ export const SOURCE_TOPIC_LABELS: Record<NonNullable<SourceItem["topics"]>[numbe
   padronanza: "Padronanza di sé",
   pornografia: "Pornografia",
   pensieri_casti: "Pensieri casti",
+  matrimonio_pazienza: "Desiderio di sposarsi e pazienza",
 };
 
 export function getSpiritualSourcesByTopic(topic: NonNullable<SourceItem["topics"]>[number]): SourceItem[] {
@@ -262,7 +329,8 @@ export function getFeaturedReading(): SourceItem[] {
   const ids = [
     "jw-stiamo-in-guardia",
     "jw-rinnovare-mente",
-    "jw-vecchia-personalita",
+    "jw-saggi-sposati-single",
+    "jw-sposarsi-solo-nel-signore",
     "jw-resistere-tentazione",
     "jw-pensare-sesso",
     "jw-porno-diversivo",

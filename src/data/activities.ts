@@ -1303,6 +1303,90 @@ export const ACTIVITY_LIBRARY: ActivityTemplate[] = [
       "note": "Vedi Fonti — padronanza."
     }
   ]
+},
+{
+  "id": "c7-12",
+  "category": "coltivare_desideri_giusti",
+  "title": "Desiderio di sposarsi con pazienza",
+  "durationMinutes": 12,
+  "objective": "Onorare il desiderio di una moglie e di una compagnia fedele, resistendo alla frustrazione e confidando nei tempi di Geova.",
+  "introduction": "Le pubblicazioni JW.org riconoscono il desiderio di sposarsi e invitano a non disperare nell'attesa, continuando a pregare. Ricordano anche che Geova non promette un coniuge a nessuno, ma si interessa dei bisogni e sa il modo migliore di provvedere se il matrimonio è ciò di cui hai bisogno.",
+  "scriptureReferences": [
+    "Filippesi 4:6, 7",
+    "Salmo 145:16",
+    "Matteo 6:32"
+  ],
+  "instructions": [
+    "Scrivi onestamente il tuo desiderio di una compagna, senza vergogna.",
+    "Scrivi dove la frustrazione rischia di abbassare la tua guardia.",
+    "Formula una preghiera di pazienza e fiducia, non di pretesa."
+  ],
+  "writingPrompt": "Come posso desiderare il matrimonio e restare paziente, senza lasciare che la frustrazione mi spinga verso ciò che odio?",
+  "reflectionQuestion": "Sto confidando in Geova o sto cercando di forzare una soluzione per disperazione?",
+  "dailyAction": "Quando senti frustrazione per l'attesa, fermati, prega brevemente e scegli un'azione edificante (servizio, amicizia, lavoro utile).",
+  "sourceReferences": [
+    {
+      "title": "Saggi consigli per chi è sposato e per chi non lo è / Sposarsi «solo nel Signore»",
+      "organization": "WOL",
+      "note": "Vedi Fonti — Desiderio di sposarsi e pazienza."
+    }
+  ]
+},
+{
+  "id": "c7-13",
+  "category": "coltivare_desideri_giusti",
+  "title": "Compagnia fedele, non decisione disperata",
+  "durationMinutes": 10,
+  "objective": "Rafforzare la decisione di cercare una moglie «solo nel Signore», rifiutando scorciatoie nate dalla solitudine.",
+  "introduction": "Secondo JW.org, il dolore di una scelta sbagliata può essere peggiore della solitudine attuale. Meglio aspettare con pazienza una persona che aiuti ad avvicinarsi a Geova.",
+  "scriptureReferences": [
+    "1 Corinti 7:39",
+    "Ebrei 13:6",
+    "Proverbi 22:3"
+  ],
+  "instructions": [
+    "Elenca tre qualità spirituali che cerchi in una futura moglie.",
+    "Elenca tre segnali di una scelta affrettata o disperata da evitare.",
+    "Collega ciascun segnale a una protezione pratica."
+  ],
+  "writingPrompt": "Quali qualità spirituali voglio davvero, e quali scorciatoie rifiuto oggi?",
+  "reflectionQuestion": "La mia ricerca di compagnia rafforza o indebolisce la mia amicizia con Geova?",
+  "dailyAction": "Rileggi le tre qualità e le tre protezioni una volta oggi, specialmente se senti solitudine.",
+  "sourceReferences": [
+    {
+      "title": "Sposarsi «solo nel Signore» / È la persona giusta per me?",
+      "organization": "WOL",
+      "note": "Vedi Fonti — Desiderio di sposarsi e pazienza."
+    }
+  ]
+},
+{
+  "id": "c5-12",
+  "category": "rafforzare_spiritualita",
+  "title": "Vivere pienamente mentre aspetto",
+  "durationMinutes": 10,
+  "objective": "Coltivare una vita soddisfacente ora, senza mettere in pausa la felicità fino al matrimonio.",
+  "introduction": "L'articolo «Felici pur non essendo sposati» incoraggia a fare posto nella mente e nel cuore a una vita piena di servizio, amicizia e dare, anche mentre si desidera sposarsi.",
+  "scriptureReferences": [
+    "Atti 20:35",
+    "Matteo 6:33",
+    "Ebrei 13:5"
+  ],
+  "instructions": [
+    "Scegli un modo concreto di dare oggi (aiuto, ministero, ascolto).",
+    "Nota come questo influenza solitudine e frustrazione.",
+    "Ringrazia Geova per una benedizione presente, non futura."
+  ],
+  "writingPrompt": "Cosa posso vivere pienamente già oggi, mentre aspetto con pazienza?",
+  "reflectionQuestion": "Sto trattando il matrimonio come unico possibile motivo di gioia?",
+  "dailyAction": "Compì l'azione di dare scelta e annota una piccola vittoria serale.",
+  "sourceReferences": [
+    {
+      "title": "Felici pur non essendo sposati / Come trovare una soluzione",
+      "organization": "WOL",
+      "note": "Vedi Fonti — Desiderio di sposarsi e pazienza."
+    }
+  ]
 }
 ];
 

@@ -172,6 +172,7 @@ export interface SourceItem {
     | "padronanza"
     | "pornografia"
     | "pensieri_casti"
+    | "matrimonio_pazienza"
   >;
 }
 

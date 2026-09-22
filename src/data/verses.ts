@@ -90,6 +90,21 @@ export const DAILY_VERSES: VerseItem[] = [
     theme: "non desiderare",
     note: "Rispetto per ciò che non ci appartiene.",
   },
+  {
+    reference: "Salmo 145:16",
+    theme: "Geova provvede",
+    note: "Geova apre la mano e soddisfa il desiderio di ogni cosa vivente.",
+  },
+  {
+    reference: "Matteo 6:32",
+    theme: "il Padre conosce i bisogni",
+    note: "Il Padre celeste sa di che cose avete bisogno.",
+  },
+  {
+    reference: "Ebrei 13:6",
+    theme: "fiducia e coraggio",
+    note: "Geova è il mio aiutatore; non avrò paura.",
+  },
 ];
 
 export function pickVerseForDate(dateIso: string, pool: VerseItem[] = DAILY_VERSES): VerseItem {
