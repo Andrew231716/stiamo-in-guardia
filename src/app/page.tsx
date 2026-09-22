@@ -6,6 +6,7 @@ import { useApp, useYesterdayCheckinNeeded } from "@/components/providers/AppPro
 import { Button } from "@/components/ui/Button";
 import { BrandLockup, LogoMark } from "@/components/brand/Logo";
 import { ScriptureLink } from "@/components/bible/ScriptureLink";
+import { getFeaturedReading } from "@/data/sources";
 import { ACTIVITY_CATEGORY_LABELS } from "@/lib/types";
 import { formatDisplayDate, greetingForHour, lastNDates, todayIso } from "@/lib/utils/date";
 import { pickVerseForDate } from "@/data/verses";
@@ -39,6 +40,8 @@ export default function DashboardPage() {
     .reverse()
     .find((c) => c.smallVictory?.trim())
     ?.smallVictory;
+
+  const featured = getFeaturedReading().slice(0, 3);
 
   const vulnerableHint =
     data.preferences.vulnerableHours.length > 0
@@ -111,6 +114,45 @@ export default function DashboardPage() {
       </section>
 
       <section className="space-y-5 animate-fade-up" style={{ animationDelay: "80ms" }}>
+        <div className="quiet-panel">
+          <p className="text-xs uppercase tracking-[0.16em] text-fg-muted">Direzione spirituale</p>
+          <h3 className="mt-2 font-[family-name:var(--font-fraunces)] text-2xl text-brand-deep">
+            Amare il bene, odiare il male
+          </h3>
+          <p className="mt-2 text-sm text-fg-muted">{GUIDE_PHRASES.loveGoodHateEvil}</p>
+          <p className="mt-2 text-sm text-fg-muted">{GUIDE_PHRASES.renewMind}</p>
+          <div className="mt-3 flex flex-wrap gap-3">
+            <ScriptureLink reference="Romani 12:2" size="sm" />
+            <ScriptureLink reference="Romani 12:9" size="sm" />
+          </div>
+          <div className="mt-4 grid gap-2">
+            {featured.map((s) => (
+              <a
+                key={s.id}
+                href={s.url}
+                target="_blank"
+                rel="noreferrer"
+                className="rounded-2xl border border-line bg-bg-elevated/70 px-4 py-3 text-sm transition hover:border-brand/40"
+              >
+                <span className="font-semibold text-brand-deep">{s.title}</span>
+                <span className="mt-1 block text-xs text-fg-muted line-clamp-2">{s.description}</span>
+              </a>
+            ))}
+          </div>
+          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            <Link href="/spiritualita">
+              <Button variant="secondary" className="w-full">
+                Percorso spirituale
+              </Button>
+            </Link>
+            <Link href="/fonti">
+              <Button variant="secondary" className="w-full">
+                Pubblicazioni JW.org
+              </Button>
+            </Link>
+          </div>
+        </div>
+
         <div className="quiet-panel">
           <p className="text-xs uppercase tracking-[0.16em] text-fg-muted">Versetto del giorno</p>
           <div className="mt-2">

@@ -1,16 +1,48 @@
 "use client";
 
+import Link from "next/link";
 import { GUIDE_PHRASES } from "@/data/catalog";
+import { getFeaturedReading } from "@/data/sources";
 import { Card, SectionTitle } from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
 import { ScriptureLink, ScriptureList } from "@/components/bible/ScriptureLink";
 
 export default function SpiritualitaPage() {
+  const readings = getFeaturedReading();
+
   return (
     <div className="space-y-4 animate-fade-up">
       <SectionTitle
-        title="Educazione spirituale"
-        subtitle="Prospettiva religiosa dei Testimoni di Geova, distinta da affermazioni scientifiche. Tocca i versetti per aprirli in JW Library."
+        title="Trasformare il modo di pensare"
+        subtitle="Obiettivo: autocontrollo dei pensieri e delle azioni. Imparare ad amare ciò che è bene e a odiare ciò che è male — senza odiare te stesso."
       />
+
+      <Card className="border-brand/20 bg-brand-soft/40">
+        <p className="text-sm font-medium text-brand">{GUIDE_PHRASES.loveGoodHateEvil}</p>
+        <p className="mt-2 text-sm text-fg-muted">{GUIDE_PHRASES.renewMind}</p>
+        <div className="mt-3">
+          <ScriptureLink reference="Romani 12:2" />
+        </div>
+        <div className="mt-2">
+          <ScriptureLink reference="Romani 12:9" />
+        </div>
+        <p className="mt-3 text-xs text-fg-muted">{GUIDE_PHRASES.romans129}</p>
+      </Card>
+
+      <Card>
+        <h3 className="font-[family-name:var(--font-fraunces)] text-xl">Amare il bene, odiare il male</h3>
+        <p className="mt-2 text-sm text-fg-muted">
+          Secondo la prospettiva biblica presentata nelle pubblicazioni JW.org, non basta «non fare» ciò che è sbagliato:
+          occorre coltivare un affetto sincero per ciò che Geova ama e imparare a odiare ciò che Egli odia. Questo riguarda
+          pensieri, sguardi, abitudini e scelte — non il valore della tua persona.
+        </p>
+        <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-fg-muted">
+          <li>Amare ciò che è bene significa riempire la mente di ciò che è vero, giusto e casto.</li>
+          <li>Odiare ciò che è male significa trovare ripugnante alimentare ciò che allontana da Geova.</li>
+          <li>Si odia la condotta dannosa, non se stessi e non il proprio corpo.</li>
+        </ul>
+        <ScriptureList className="mt-3" references={["Salmo 97:10", "Romani 12:9", "Filippesi 4:8"]} />
+      </Card>
 
       <Card>
         <h3 className="font-[family-name:var(--font-fraunces)] text-xl">Impulso involontario e scelta volontaria</h3>
@@ -58,7 +90,7 @@ export default function SpiritualitaPage() {
       </Card>
 
       <Card>
-        <h3 className="font-[family-name:var(--font-fraunces)] text-xl">Pensieri casti</h3>
+        <h3 className="font-[family-name:var(--font-fraunces)] text-xl">Pensieri casti e padronanza</h3>
         <ScriptureList
           references={[
             "Filippesi 4:8",
@@ -67,6 +99,7 @@ export default function SpiritualitaPage() {
             "Colossesi 3:5",
             "Salmo 97:10",
             "Proverbi 22:3",
+            "2 Pietro 1:5, 6",
           ]}
         />
       </Card>
@@ -75,12 +108,33 @@ export default function SpiritualitaPage() {
         <h3 className="font-[family-name:var(--font-fraunces)] text-xl">Avversione lucida</h3>
         <p className="mt-2 text-sm text-fg-muted">
           L&apos;obiettivo è sviluppare una forte avversione verso comportamenti contrari ai tuoi valori, senza odio verso
-          te stesso. Per la pornografia, rifletti su promesse immediate, effetti nella tua esperienza, oggettificazione e
-          abitudini. Per la masturbazione, il ragionamento religioso di JW.org (non un fatto scientifico) indica che
-          ricorrervi come sfogo può alimentare l&apos;appetito sessuale, favorire un atteggiamento egocentrico e influenzare
-          il modo di vedere gli altri. Consulta JW.org per i materiali ufficiali.
+          te stesso. Per ragionamenti spirituali ufficiali su pornografia e purezza, usa le letture qui sotto (JW.org /
+          WOL). Distingui sempre convinzioni religiose e affermazioni scientifiche.
         </p>
         <p className="mt-4 font-medium text-brand">{GUIDE_PHRASES.aversion}</p>
+      </Card>
+
+      <Card>
+        <h3 className="font-[family-name:var(--font-fraunces)] text-xl">Letture consigliate da JW.org</h3>
+        <p className="mt-1 text-sm text-fg-muted">
+          Articoli ufficiali verificati. Apri e leggi sulla fonte: qui trovi solo il titolo e una breve descrizione.
+        </p>
+        <div className="mt-4 space-y-3">
+          {readings.map((s) => (
+            <article key={s.id} className="rounded-2xl border border-line p-4">
+              <h4 className="font-semibold text-brand-deep">{s.title}</h4>
+              <p className="mt-1 text-sm text-fg-muted">{s.description}</p>
+              <a className="mt-2 inline-block text-sm text-brand underline" href={s.url} target="_blank" rel="noreferrer">
+                Apri su JW.org / WOL
+              </a>
+            </article>
+          ))}
+        </div>
+        <Link href="/fonti" className="mt-4 block">
+          <Button variant="secondary" className="w-full">
+            Vedi tutte le fonti per argomento
+          </Button>
+        </Link>
       </Card>
     </div>
   );

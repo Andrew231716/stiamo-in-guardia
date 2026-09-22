@@ -55,9 +55,15 @@ export function ScriptureLink({
   );
 }
 
-export function ScriptureList({ references }: { references: string[] }) {
+export function ScriptureList({
+  references,
+  className,
+}: {
+  references: string[];
+  className?: string;
+}) {
   return (
-    <ul className="mt-2 space-y-2">
+    <ul className={cn("mt-2 space-y-2", className)}>
       {references.map((ref) => (
         <li key={ref}>
           <ScriptureLink reference={ref} />

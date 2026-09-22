@@ -55,4 +55,9 @@ export const GUIDE_PHRASES = {
     "Grazie per aver registrato sinceramente quello che è successo. Una ricaduta non cancella i progressi precedenti. Proviamo a capire quale situazione ha abbassato la guardia e quale protezione concreta puoi aggiungere.",
   disclaimer:
     "Questa app è uno strumento personale di supporto spirituale e di consapevolezza. Non sostituisce un medico, uno psicologo, uno psichiatra o un responsabile spirituale.",
+  renewMind:
+    "Non bastano ritocchi superficiali: voglio rinnovare la mente, imparare ad amare ciò che è bene e a odiare ciò che è male — senza odiare me stesso.",
+  romans129: "Romani 12:9 — Aborrite ciò che è malvagio; attenetevi a ciò che è buono.",
+  loveGoodHateEvil:
+    "Imparo ad amare ciò che è bene e a odiare ciò che è male. Odio la condotta dannosa, non la mia persona né il mio corpo.",
 };

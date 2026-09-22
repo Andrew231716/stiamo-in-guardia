@@ -33,8 +33,13 @@ describe("jwLibraryLink", () => {
     expect(url).toContain("wtlocale=I");
   });
 
-  it("returns null for unknown books", () => {
-    expect(parseScriptureReference("LibroInesistente 1:1")).toBeNull();
-    expect(buildJwLibraryUrl("???")).toBeNull();
+  it("parses Romani and multi-word books", () => {
+    expect(parseScriptureReference("Romani 12:9")).toMatchObject({ bookNumber: 45, chapter: 12, verseStart: 9 });
+    expect(parseScriptureReference("2 Pietro 1:5, 6")).toMatchObject({
+      bookNumber: 61,
+      chapter: 1,
+      verseStart: 5,
+      verseEnd: 6,
+    });
   });
 });

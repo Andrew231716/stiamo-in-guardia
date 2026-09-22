@@ -163,6 +163,16 @@ export interface SourceItem {
   sourceType: "spiritual" | "clinical" | "general";
   description: string;
   lastVerifiedAt?: string;
+  /** Argomenti per raggruppare le letture consigliate. */
+  topics?: Array<
+    | "tentazione"
+    | "rinnovare_mente"
+    | "amare_bene"
+    | "purezza"
+    | "padronanza"
+    | "pornografia"
+    | "pensieri_casti"
+  >;
 }
 
 export interface ReportData {

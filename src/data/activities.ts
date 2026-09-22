@@ -1172,7 +1172,138 @@ export const ACTIVITY_LIBRARY: ActivityTemplate[] = [
     "writingPrompt": "Quale desiderio giusto voglio nutrire oggi, anche se piccolo?",
     "reflectionQuestion": "Sto lasciando spazio solo alla resistenza, o anche alla crescita?",
     "dailyAction": "Dedica 10 minuti al desiderio giusto scelto."
-  }
+  },
+{
+  "id": "c7-10",
+  "category": "coltivare_desideri_giusti",
+  "title": "Amare il bene, odiare il male",
+  "durationMinutes": 12,
+  "objective": "Coltivare un affetto sincero per ciò che è bene e imparare a odiare ciò che è male, senza odiare te stesso.",
+  "introduction": "Romani 12:9 invita ad aborrire ciò che è malvagio e ad attenersi a ciò che è buono. Nelle pubblicazioni JW.org questo viene collegato a un cambiamento del cuore: amare ciò che Geova ama e odiare ciò che Egli odia, non odiare la propria persona.",
+  "scriptureReferences": [
+    "Romani 12:9",
+    "Salmo 97:10"
+  ],
+  "instructions": [
+    "Leggi Romani 12:9 in JW Library.",
+    "Scrivi una cosa buona che vuoi amare di più oggi (pensiero, abitudine, servizio).",
+    "Scrivi una cosa cattiva che vuoi imparare a odiare (senza insultarti)."
+  ],
+  "writingPrompt": "Cosa voglio amare di più e cosa voglio imparare a odiare — in modo concreto e rispettoso verso me stesso?",
+  "reflectionQuestion": "Il mio odio per il male mi spinge all'azione positiva o solo alla vergogna?",
+  "dailyAction": "Scegli un'azione breve che nutre il bene e una protezione che riduce l'accesso al male.",
+  "sourceReferences": [
+    {
+      "title": "Puoi ‘spogliarti della vecchia personalità’ / È bene odiare il male?",
+      "organization": "JW.org / WOL",
+      "note": "Vedi sezione Fonti — articoli ufficiali su odiare ciò che è male e rinnovare la mente."
+    }
+  ]
+},
+{
+  "id": "c7-11",
+  "category": "coltivare_desideri_giusti",
+  "title": "Rinnovare la mente (Romani 12:2)",
+  "durationMinutes": 12,
+  "objective": "Fare un passo concreto per trasformare il modo di pensare, non solo il comportamento di superficie.",
+  "introduction": "L’articolo «Siate trasformati rinnovando la vostra mente» su JW.org spiega che non bastano ritocchi superficiali: occorre esaminare pensieri, motivi e decisioni alla luce della volontà di Geova.",
+  "scriptureReferences": [
+    "Romani 12:2",
+    "2 Corinti 13:5"
+  ],
+  "instructions": [
+    "Apri l’articolo consigliato nella sezione Fonti (rinnovare la mente), o leggi Romani 12:2.",
+    "Individua un pensiero ricorrente che vuoi cambiare.",
+    "Scrivi il pensiero rinnovato che vuoi praticare al suo posto."
+  ],
+  "writingPrompt": "Quale pensiero voglio rinnovare oggi e con quale pensione sostitutiva?",
+  "reflectionQuestion": "Sto cercando un cambiamento di cuore o solo di immagine?",
+  "dailyAction": "Quando compare il vecchio pensiero, sostituiscilo deliberatamente con quello rinnovato e una breve preghiera.",
+  "sourceReferences": [
+    {
+      "title": "«Siate trasformati rinnovando la vostra mente»",
+      "organization": "La Torre di Guardia (studio) — JW.org",
+      "note": "Link nella sezione Fonti."
+    }
+  ]
+},
+{
+  "id": "c5-11",
+  "category": "rafforzare_spiritualita",
+  "title": "Riempire la mente secondo Filippesi 4:8",
+  "durationMinutes": 10,
+  "objective": "Non lasciare la mente vuota: riempirla di ciò che è vero, giusto e casto.",
+  "introduction": "Le pubblicazioni sulla purezza morale sottolineano che respingere il male non basta: bisogna nutrire pensieri sani e puri.",
+  "scriptureReferences": [
+    "Filippesi 4:8"
+  ],
+  "instructions": [
+    "Elenca tre contenuti o attività edificanti disponibili oggi (lettura, adunanza, ministero, lavoro utile).",
+    "Scegline uno e dedicagli almeno 10 minuti."
+  ],
+  "writingPrompt": "Con cosa sto riempiendo la mente oggi, in concreto?",
+  "reflectionQuestion": "Sto lasciando spazi vuoti in cui rientrano facilmente i vecchi automatismi?",
+  "dailyAction": "Sostituisci un momento di scorrimento fine a se stesso con una delle tre attività edificanti.",
+  "sourceReferences": [
+    {
+      "title": "La purezza morale è la bellezza dei giovani / Possiamo rimanere moralmente puri",
+      "organization": "WOL",
+      "note": "Vedi Fonti — pensieri casti e purezza."
+    }
+  ]
+},
+{
+  "id": "c4-10",
+  "category": "proteggere_occhi_pensieri",
+  "title": "Respingere subito il pensiero deliberato",
+  "durationMinutes": 8,
+  "objective": "Allenare la risposta immediata: notare, non alimentare, scegliere il passo successivo.",
+  "introduction": "Le pubblicazioni JW.org collegano la protezione della mente al respingere subito i pensieri che possono portare al peccato, distinguendo impulso e scelta.",
+  "scriptureReferences": [
+    "Matteo 5:28",
+    "2 Timoteo 2:22"
+  ],
+  "instructions": [
+    "Definisci la tua sequenza: Noto → Nomino → Interrompo → Prego → Agisco.",
+    "Provala una volta a freddo oggi."
+  ],
+  "writingPrompt": "Qual è la mia sequenza personale di interruzione del pensiero deliberato?",
+  "reflectionQuestion": "Quanto tempo di solito lascio passare tra «noto» e «interrompo»?",
+  "dailyAction": "Usa la sequenza alla prima occasione utile, anche se l’impulso è lieve.",
+  "sourceReferences": [
+    {
+      "title": "Puoi resistere alla tentazione! / Come posso smettere di pensare sempre al sesso?",
+      "organization": "WOL",
+      "note": "Vedi Fonti."
+    }
+  ]
+},
+{
+  "id": "c6-09",
+  "category": "ricordare_strategie",
+  "title": "Padronanza di sé come protezione",
+  "durationMinutes": 10,
+  "objective": "Rivedere la padronanza di sé come capacità che protegge, non come punizione.",
+  "introduction": "Secondo le pubblicazioni sulla padronanza di sé, questa qualità si coltiva con conoscenza, sforzo e spirito di Dio: è una protezione, non disprezzo del corpo.",
+  "scriptureReferences": [
+    "2 Pietro 1:5, 6",
+    "Galati 5:22, 23"
+  ],
+  "instructions": [
+    "Scrivi tre esempi recenti in cui hai esercitato padronanza (anche piccoli).",
+    "Collega ciascuno a una protezione che vuoi ripetere."
+  ],
+  "writingPrompt": "Dove la padronanza di sé mi ha già protetto, e come posso rafforzarla?",
+  "reflectionQuestion": "Sto coltivando padronanza o solo autocritica?",
+  "dailyAction": "Ripeti oggi una delle tre protezioni in modo preventivo.",
+  "sourceReferences": [
+    {
+      "title": "La padronanza di sé è una protezione",
+      "organization": "WOL",
+      "note": "Vedi Fonti — padronanza."
+    }
+  ]
+}
 ];
 
 export function getActivityById(id: string): ActivityTemplate | undefined {

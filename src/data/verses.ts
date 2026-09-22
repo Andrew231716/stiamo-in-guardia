@@ -31,6 +31,21 @@ export const PRAYER_VERSES: VerseItem[] = [
 export const DAILY_VERSES: VerseItem[] = [
   ...PRAYER_VERSES,
   {
+    reference: "Romani 12:2",
+    theme: "rinnovare la mente",
+    note: "Invito a trasformarsi rinnovando il modo di pensare.",
+  },
+  {
+    reference: "Romani 12:9",
+    theme: "amare il bene",
+    note: "Aborrire ciò che è malvagio e attenersi a ciò che è buono.",
+  },
+  {
+    reference: "2 Pietro 1:5, 6",
+    theme: "padronanza di sé",
+    note: "Aggiungere alla conoscenza la padronanza di sé.",
+  },
+  {
     reference: "Filippesi 4:8",
     theme: "pensieri casti",
     note: "Orientare la mente verso ciò che è vero, retto e puro.",
