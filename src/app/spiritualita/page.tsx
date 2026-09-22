@@ -2,13 +2,14 @@
 
 import { GUIDE_PHRASES } from "@/data/catalog";
 import { Card, SectionTitle } from "@/components/ui/Card";
+import { ScriptureLink, ScriptureList } from "@/components/bible/ScriptureLink";
 
 export default function SpiritualitaPage() {
   return (
     <div className="space-y-4 animate-fade-up">
       <SectionTitle
         title="Educazione spirituale"
-        subtitle="Prospettiva religiosa dei Testimoni di Geova, distinta da affermazioni scientifiche."
+        subtitle="Prospettiva religiosa dei Testimoni di Geova, distinta da affermazioni scientifiche. Tocca i versetti per aprirli in JW Library."
       />
 
       <Card>
@@ -27,17 +28,23 @@ export default function SpiritualitaPage() {
         <h3 className="font-[family-name:var(--font-fraunces)] text-xl">Sessualità come dono</h3>
         <p className="mt-2 text-sm text-fg-muted">
           Secondo la prospettiva biblica, le facoltà sessuali sono un dono di Geova da utilizzare secondo il suo proposito,
-          con santità e onore. Versetto principale: 1 Tessalonicesi 4:3-5. La padronanza di sé è una capacità positiva, non
-          odio verso il proprio corpo.
+          con santità e onore. La padronanza di sé è una capacità positiva, non odio verso il proprio corpo.
         </p>
+        <p className="mt-3 text-sm text-fg-muted">Versetto principale:</p>
+        <div className="mt-1">
+          <ScriptureLink reference="1 Tessalonicesi 4:3-5" />
+        </div>
       </Card>
 
       <Card>
         <h3 className="font-[family-name:var(--font-fraunces)] text-xl">Dignità delle donne</h3>
         <p className="mt-2 text-sm text-fg-muted">
-          Basato su 1 Timoteo 5:2. Ogni donna è prima di tutto una persona con dignità, valore, qualità, sentimenti,
-          obiettivi, una vita personale e il diritto alla propria intimità.
+          Ogni donna è prima di tutto una persona con dignità, valore, qualità, sentimenti, obiettivi, una vita personale e
+          il diritto alla propria intimità.
         </p>
+        <div className="mt-3">
+          <ScriptureLink reference="1 Timoteo 5:2" />
+        </div>
       </Card>
 
       <Card>
@@ -45,15 +52,23 @@ export default function SpiritualitaPage() {
         <p className="mt-2 text-sm leading-relaxed text-fg-muted">{GUIDE_PHRASES.intimacy}</p>
         <p className="mt-3 text-xs text-fg-muted">
           Il paragone del «rubare» può essere una metafora personale di rispetto. Non è presentato come equivalenza
-          dottrinale né come citazione biblica. Riferimenti utili: Matteo 5:28, Esodo 20:17, 1 Timoteo 5:2.
+          dottrinale né come citazione biblica.
         </p>
+        <ScriptureList references={["Matteo 5:28", "Esodo 20:17", "1 Timoteo 5:2"]} />
       </Card>
 
       <Card>
         <h3 className="font-[family-name:var(--font-fraunces)] text-xl">Pensieri casti</h3>
-        <p className="mt-2 text-sm text-fg-muted">
-          Filippesi 4:8 · Giobbe 31:1 · 2 Timoteo 2:22 · Colossesi 3:5 · Salmo 97:10 · Proverbi 22:3
-        </p>
+        <ScriptureList
+          references={[
+            "Filippesi 4:8",
+            "Giobbe 31:1",
+            "2 Timoteo 2:22",
+            "Colossesi 3:5",
+            "Salmo 97:10",
+            "Proverbi 22:3",
+          ]}
+        />
       </Card>
 
       <Card>

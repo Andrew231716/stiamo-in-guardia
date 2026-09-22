@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { useApp } from "@/components/providers/AppProvider";
 import { Button } from "@/components/ui/Button";
 import { Card, SectionTitle } from "@/components/ui/Card";
+import { ScriptureLink } from "@/components/bible/ScriptureLink";
 import { pickPrayerVerseForDate } from "@/data/verses";
 import type { PrayerEntry } from "@/lib/types";
 import { todayIso } from "@/lib/utils/date";
@@ -41,8 +42,11 @@ function PrayerForm({
 
       <Card>
         <p className="text-xs uppercase tracking-[0.16em] text-fg-muted">Versetto pertinente</p>
-        <p className="mt-2 font-[family-name:var(--font-fraunces)] text-2xl text-brand">{verseReference}</p>
-        <p className="mt-1 text-sm text-fg-muted">{verseNote}</p>
+        <div className="mt-2">
+          <ScriptureLink reference={verseReference} size="lg" />
+        </div>
+        <p className="mt-2 text-sm text-fg-muted">{verseNote}</p>
+        <p className="mt-2 text-xs text-fg-muted">Tocca il riferimento per aprirlo nella sezione Bibbia di JW Library.</p>
       </Card>
 
       <Card>

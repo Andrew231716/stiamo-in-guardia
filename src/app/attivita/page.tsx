@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useApp } from "@/components/providers/AppProvider";
 import { Button } from "@/components/ui/Button";
 import { Card, SectionTitle } from "@/components/ui/Card";
+import { ScriptureList } from "@/components/bible/ScriptureLink";
 import type { DailyActivityRecord } from "@/lib/types";
 import { ACTIVITY_CATEGORY_LABELS } from "@/lib/types";
 import { todayIso } from "@/lib/utils/date";
@@ -33,11 +34,8 @@ function ActivityForm({ activity }: { activity: DailyActivityRecord }) {
 
       <Card>
         <h3 className="font-semibold">Scrittura o principio</h3>
-        <ul className="mt-2 list-disc space-y-1 pl-5 text-fg-muted">
-          {activity.scriptureReferences.map((ref) => (
-            <li key={ref}>{ref}</li>
-          ))}
-        </ul>
+        <p className="mt-1 text-sm text-fg-muted">Tocca un riferimento per aprirlo in JW Library.</p>
+        <ScriptureList references={activity.scriptureReferences} />
       </Card>
 
       <Card>

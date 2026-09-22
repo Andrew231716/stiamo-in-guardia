@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useApp, useYesterdayCheckinNeeded } from "@/components/providers/AppProvider";
 import { Button } from "@/components/ui/Button";
 import { BrandLockup, LogoMark } from "@/components/brand/Logo";
+import { ScriptureLink } from "@/components/bible/ScriptureLink";
 import { ACTIVITY_CATEGORY_LABELS } from "@/lib/types";
 import { formatDisplayDate, greetingForHour, lastNDates, todayIso } from "@/lib/utils/date";
 import { pickVerseForDate } from "@/data/verses";
@@ -112,8 +113,11 @@ export default function DashboardPage() {
       <section className="space-y-5 animate-fade-up" style={{ animationDelay: "80ms" }}>
         <div className="quiet-panel">
           <p className="text-xs uppercase tracking-[0.16em] text-fg-muted">Versetto del giorno</p>
-          <p className="mt-2 font-[family-name:var(--font-fraunces)] text-2xl text-brand">{verse.reference}</p>
-          <p className="mt-1 text-sm text-fg-muted">{verse.note}</p>
+          <div className="mt-2">
+            <ScriptureLink reference={verse.reference} size="lg" />
+          </div>
+          <p className="mt-2 text-sm text-fg-muted">{verse.note}</p>
+          <p className="mt-2 text-xs text-fg-muted">Tocca il versetto per aprirlo in JW Library.</p>
         </div>
 
         <div className="quiet-panel">
