@@ -4,8 +4,8 @@
   "description": "Assistente spirituale quotidiano personale. Non sostituisce medici o responsabili spirituali.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#eef3f0",
-  "theme_color": "#1f5c4a",
+  "background_color": "#e7efea",
+  "theme_color": "#1a5746",
   "lang": "it",
   "icons": [
     {

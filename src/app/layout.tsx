@@ -27,15 +27,15 @@ export const metadata: Metadata = {
     title: "Stiamo in guardia",
   },
   icons: {
-    icon: "/icons/icon-192.png",
+    icon: [{ url: "/logo.svg", type: "image/svg+xml" }, { url: "/icons/icon-192.png" }],
     apple: "/icons/icon-192.png",
   },
 };
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#eef3f0" },
-    { media: "(prefers-color-scheme: dark)", color: "#121a17" },
+    { media: "(prefers-color-scheme: light)", color: "#e7efea" },
+    { media: "(prefers-color-scheme: dark)", color: "#0e1714" },
   ],
   width: "device-width",
   initialScale: 1,

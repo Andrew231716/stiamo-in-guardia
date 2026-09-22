@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="sigSky" x1="12" y1="8" x2="52" y2="56" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7EB8A8"/>
+      <stop offset="0.55" stop-color="#2F6B58"/>
+      <stop offset="1" stop-color="#184538"/>
+    </linearGradient>
+    <linearGradient id="sigFlame" x1="32" y1="18" x2="32" y2="38" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F3E0B0"/>
+      <stop offset="1" stop-color="#C9983C"/>
+    </linearGradient>
+  </defs>
+  <circle cx="32" cy="32" r="30" fill="url(#sigSky)"/>
+  <path d="M10 42c6-10 14-16 22-16s16 6 22 16" fill="none" stroke="#E8F4EF" stroke-opacity="0.35" stroke-width="1.5"/>
+  <path d="M32 18c3.2 4.2 5 7.4 5 10.2 0 3-2.2 5.3-5 5.3s-5-2.3-5-5.3c0-2.8 1.8-6 5-10.2z" fill="url(#sigFlame)"/>
+  <path d="M24.5 36.5c2.2-1.4 4.8-2.2 7.5-2.2s5.3.8 7.5 2.2c1.4.9 1.2 2.8-.4 3.4-2.2.8-4.6 1.2-7.1 1.2s-4.9-.4-7.1-1.2c-1.6-.6-1.8-2.5-.4-3.4z" fill="#F7FBF9" fill-opacity="0.92"/>
+  <circle cx="32" cy="37.2" r="1.6" fill="#1F5C4A"/>
+</svg>

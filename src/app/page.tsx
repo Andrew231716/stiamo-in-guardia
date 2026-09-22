@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useApp, useYesterdayCheckinNeeded } from "@/components/providers/AppProvider";
 import { Button } from "@/components/ui/Button";
-import { Card } from "@/components/ui/Card";
+import { BrandLockup, LogoMark } from "@/components/brand/Logo";
 import { ACTIVITY_CATEGORY_LABELS } from "@/lib/types";
 import { formatDisplayDate, greetingForHour, lastNDates, todayIso } from "@/lib/utils/date";
 import { pickVerseForDate } from "@/data/verses";
@@ -28,13 +28,9 @@ export default function DashboardPage() {
   const week = lastNDates(7);
   const weekSummary = week.map((d) => {
     const c = getCheckinForDate(d);
-    const a = getActivityForDate(d);
     return {
       date: d,
       checkIn: Boolean(c),
-      activityDone: Boolean(a?.completedAt),
-      episode:
-        c?.pornographyStatus === "episode" || c?.masturbationStatus === "episode",
     };
   });
 
@@ -55,91 +51,43 @@ export default function DashboardPage() {
   if (data.preferences.tiredMode) {
     return (
       <div className="space-y-4 animate-fade-up">
-        <Card>
-          <h2 className="font-[family-name:var(--font-fraunces)] text-2xl text-brand">Modalità semplice attiva</h2>
-          <p className="mt-2 text-fg-muted">
+        <div className="hero-panel">
+          <BrandLockup size="md" />
+          <p className="mt-5 text-lg leading-relaxed text-white/90">
             Se la mano sta andando automaticamente verso il telefono per cercare materiale sessuale, posa il telefono fuori
             portata e alzati. Non aspettare che l&apos;impulso sparisca.
           </p>
-          <div className="mt-4 flex flex-col gap-3">
+          <div className="mt-6 flex flex-col gap-3">
             <Link href="/stanchezza">
-              <Button className="w-full">Apri modalità semplice</Button>
+              <Button variant="accent" className="w-full">
+                Apri modalità semplice
+              </Button>
             </Link>
-            <Button
-              variant="secondary"
-              className="w-full"
-              onClick={() => {
-                /* stay */
-              }}
-            >
-              Resta sulla dashboard
-            </Button>
           </div>
-        </Card>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-4 animate-fade-up">
-      <Card className="overflow-hidden">
-        <div className="space-y-3">
-          <p className="text-sm capitalize text-fg-muted">{formatDisplayDate(date)}</p>
-          <h2 className="font-[family-name:var(--font-fraunces)] text-3xl text-fg">
-            {greetingForHour(hour, data.preferences.displayName)}
-          </h2>
-          <p className="text-fg-muted">{GUIDE_PHRASES.impulse}</p>
+    <div className="space-y-8">
+      {/* First viewport: one composition, brand first */}
+      <section className="hero-panel animate-dawn-rise min-h-[58vh] sm:min-h-[52vh]">
+        <div className="flex items-start justify-between gap-3">
+          <BrandLockup size="lg" />
+          <LogoMark className="hidden h-16 w-16 opacity-90 sm:block" />
         </div>
-      </Card>
-
-      <Card>
-        <p className="text-xs uppercase tracking-[0.16em] text-fg-muted">Versetto del giorno</p>
-        <p className="mt-2 font-[family-name:var(--font-fraunces)] text-xl text-brand">{verse.reference}</p>
-        <p className="mt-1 text-sm text-fg-muted">{verse.note}</p>
-      </Card>
-
-      <Card>
-        <p className="text-xs uppercase tracking-[0.16em] text-fg-muted">Obiettivo quotidiano</p>
-        <h3 className="mt-2 font-[family-name:var(--font-fraunces)] text-2xl">Fermati e prega col cuore</h3>
-        <p className="mt-2 text-sm text-fg-muted">
-          La preghiera è un aiuto spirituale e una scelta personale, non una tecnica che fa sparire automaticamente
-          l&apos;impulso.
+        <p className="mt-8 text-sm capitalize text-white/70">{formatDisplayDate(date)}</p>
+        <h2 className="mt-2 max-w-xl font-[family-name:var(--font-fraunces)] text-3xl leading-tight text-white sm:text-4xl">
+          {greetingForHour(hour, data.preferences.displayName)}. Oggi puoi restare desto con calma.
+        </h2>
+        <p className="mt-3 max-w-lg text-base text-white/80">
+          Fermati e prega col cuore. Un impulso è una sensazione, non un comando.
         </p>
-        <p className="mt-3 text-sm">
-          Stato:{" "}
-          <span className={prayer?.completed ? "text-ok" : "text-fg-muted"}>
-            {prayer?.completed ? "Momento di preghiera registrato" : "Ancora da registrare"}
-          </span>
-        </p>
-        <Link href="/preghiera" className="mt-4 block">
-          <Button variant="secondary" className="w-full">
-            Apri scheda preghiera
-          </Button>
-        </Link>
-      </Card>
-
-      <Card>
-        <p className="text-xs uppercase tracking-[0.16em] text-fg-muted">Attività spirituale del giorno</p>
-        <h3 className="mt-2 font-[family-name:var(--font-fraunces)] text-2xl">
-          {activity?.title ?? "Preparazione…"}
-        </h3>
-        {activity ? (
-          <>
-            <p className="mt-1 text-sm text-fg-muted">
-              {ACTIVITY_CATEGORY_LABELS[activity.category]} · circa {activity.durationMinutes} min
-            </p>
-            <p className="mt-3 text-sm text-fg-muted">{activity.objective}</p>
-            <p className="mt-3 text-sm">
-              Stato:{" "}
-              <span className={activity.completedAt ? "text-ok" : "text-fg-muted"}>
-                {activity.completedAt ? "Completata" : "Da iniziare"}
-              </span>
-            </p>
-          </>
-        ) : null}
-        <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+        <div className="mt-8 flex flex-col gap-3 sm:flex-row">
           <Link href="/attivita" className="flex-1">
             <Button
+              variant="accent"
               className="w-full"
               disabled={loadingActivity}
               onClick={() => {
@@ -151,63 +99,118 @@ export default function DashboardPage() {
             </Button>
           </Link>
           <Link href={`/check-in?date=${yesterday}`} className="flex-1">
-            <Button variant="secondary" className="w-full">
-              Registra il giorno precedente
+            <Button
+              variant="secondary"
+              className="w-full border-white/25 bg-white/10 text-white hover:bg-white/18"
+            >
+              Registra ieri
             </Button>
           </Link>
         </div>
-      </Card>
+      </section>
 
-      <Card>
-        <p className="text-xs uppercase tracking-[0.16em] text-fg-muted">Check-in quotidiano</p>
-        <p className="mt-2 text-sm">
-          {needed
-            ? `Manca ancora il check-in di ${yesterday}.`
-            : "Check-in del giorno precedente presente."}
-        </p>
-        <div className="mt-4 grid grid-cols-7 gap-2">
-          {weekSummary.map((d) => (
-            <div key={d.date} className="text-center">
-              <div
-                className={`mx-auto h-9 w-9 rounded-full border ${
-                  d.checkIn ? "border-ok bg-brand-soft" : "border-line bg-bg"
-                }`}
-                title={d.date}
-              />
-              <p className="mt-1 text-[10px] text-fg-muted">{d.date.slice(8)}</p>
-            </div>
-          ))}
+      <section className="space-y-5 animate-fade-up" style={{ animationDelay: "80ms" }}>
+        <div className="quiet-panel">
+          <p className="text-xs uppercase tracking-[0.16em] text-fg-muted">Versetto del giorno</p>
+          <p className="mt-2 font-[family-name:var(--font-fraunces)] text-2xl text-brand">{verse.reference}</p>
+          <p className="mt-1 text-sm text-fg-muted">{verse.note}</p>
         </div>
-        <p className="mt-3 text-xs text-fg-muted">Ultimi 7 giorni: cerchio pieno = check-in registrato.</p>
-      </Card>
 
-      {recentVictory ? (
-        <Card>
-          <p className="text-xs uppercase tracking-[0.16em] text-fg-muted">Piccola vittoria recente</p>
-          <p className="mt-2 text-fg">{recentVictory}</p>
-        </Card>
-      ) : null}
+        <div className="quiet-panel">
+          <p className="text-xs uppercase tracking-[0.16em] text-fg-muted">Obiettivo quotidiano</p>
+          <h3 className="mt-2 font-[family-name:var(--font-fraunces)] text-2xl text-brand-deep">
+            Fermati e prega col cuore
+          </h3>
+          <p className="mt-2 text-sm text-fg-muted">
+            La preghiera è un aiuto spirituale e una scelta personale, non una tecnica che fa sparire automaticamente
+            l&apos;impulso.
+          </p>
+          <p className="mt-3 text-sm">
+            Stato:{" "}
+            <span className={prayer?.completed ? "text-ok" : "text-fg-muted"}>
+              {prayer?.completed ? "Momento di preghiera registrato" : "Ancora da registrare"}
+            </span>
+          </p>
+          <Link href="/preghiera" className="mt-4 block">
+            <Button variant="secondary" className="w-full">
+              Apri scheda preghiera
+            </Button>
+          </Link>
+        </div>
 
-      {vulnerableHint ? (
-        <Card className="border-accent/30 bg-accent-soft/40">
-          <p className="text-sm">{vulnerableHint}</p>
-        </Card>
-      ) : null}
+        <div className="quiet-panel">
+          <p className="text-xs uppercase tracking-[0.16em] text-fg-muted">Attività spirituale del giorno</p>
+          <h3 className="mt-2 font-[family-name:var(--font-fraunces)] text-2xl">
+            {activity?.title ?? "Preparazione…"}
+          </h3>
+          {activity ? (
+            <>
+              <p className="mt-1 text-sm text-fg-muted">
+                {ACTIVITY_CATEGORY_LABELS[activity.category]} · circa {activity.durationMinutes} min
+              </p>
+              <p className="mt-3 text-sm text-fg-muted">{activity.objective}</p>
+              <p className="mt-3 text-sm">
+                Stato:{" "}
+                <span className={activity.completedAt ? "text-ok" : "text-fg-muted"}>
+                  {activity.completedAt ? "Completata" : "Da iniziare"}
+                </span>
+              </p>
+            </>
+          ) : null}
+        </div>
 
-      <div className="grid gap-3 sm:grid-cols-2">
-        <Link href="/report/settimanale">
-          <Button variant="secondary" className="w-full">
-            Report settimanale
-          </Button>
-        </Link>
-        <Link href="/report/mensile">
-          <Button variant="secondary" className="w-full">
-            Report mensile
-          </Button>
-        </Link>
-      </div>
+        <div className="quiet-panel">
+          <p className="text-xs uppercase tracking-[0.16em] text-fg-muted">Check-in quotidiano</p>
+          <p className="mt-2 text-sm">
+            {needed
+              ? `Manca ancora il check-in di ${yesterday}.`
+              : "Check-in del giorno precedente presente."}
+          </p>
+          <div className="mt-4 grid grid-cols-7 gap-2">
+            {weekSummary.map((d) => (
+              <div key={d.date} className="text-center">
+                <div
+                  className={`mx-auto h-9 w-9 rounded-full border transition ${
+                    d.checkIn ? "border-ok bg-brand-soft" : "border-line bg-bg-elevated/70"
+                  }`}
+                  title={d.date}
+                />
+                <p className="mt-1 text-[10px] text-fg-muted">{d.date.slice(8)}</p>
+              </div>
+            ))}
+          </div>
+          <p className="mt-3 text-xs text-fg-muted">Ultimi 7 giorni: cerchio pieno = check-in registrato.</p>
+        </div>
 
-      <p className="pb-2 text-center text-xs text-fg-muted">{GUIDE_PHRASES.disclaimer}</p>
+        {recentVictory ? (
+          <div className="quiet-panel">
+            <p className="text-xs uppercase tracking-[0.16em] text-fg-muted">Piccola vittoria recente</p>
+            <p className="mt-2 text-fg">{recentVictory}</p>
+          </div>
+        ) : null}
+
+        {vulnerableHint ? (
+          <div className="rounded-[var(--radius)] bg-accent-soft/70 px-4 py-3 text-sm text-[color:var(--brand-deep)]">
+            {vulnerableHint}
+          </div>
+        ) : null}
+
+        <div className="grid gap-3 sm:grid-cols-2">
+          <Link href="/report/settimanale">
+            <Button variant="secondary" className="w-full">
+              Report settimanale
+            </Button>
+          </Link>
+          <Link href="/report/mensile">
+            <Button variant="secondary" className="w-full">
+              Report mensile
+            </Button>
+          </Link>
+        </div>
+
+        <p className="pb-2 text-center text-xs text-fg-muted">{GUIDE_PHRASES.disclaimer}</p>
+        <p className="sr-only">{GUIDE_PHRASES.impulse}</p>
+      </section>
     </div>
   );
 }

@@ -13,7 +13,7 @@ export function Card({
   return (
     <Tag
       className={cn(
-        "rounded-[var(--radius)] border border-line bg-bg-elevated/90 p-5 shadow-[var(--shadow)] backdrop-blur-sm",
+        "rounded-[var(--radius)] border border-line/80 bg-bg-elevated/80 p-5 shadow-[var(--shadow)] backdrop-blur-[2px]",
         className,
       )}
     >
@@ -31,7 +31,7 @@ export function SectionTitle({
 }) {
   return (
     <header className="mb-4 space-y-1">
-      <h2 className="font-[family-name:var(--font-fraunces)] text-2xl tracking-tight text-fg">{title}</h2>
+      <h2 className="font-[family-name:var(--font-fraunces)] text-2xl tracking-tight text-brand-deep">{title}</h2>
       {subtitle ? <p className="text-sm text-fg-muted">{subtitle}</p> : null}
     </header>
   );

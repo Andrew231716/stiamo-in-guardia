@@ -1,36 +1,44 @@
 @import "tailwindcss";
 
 :root {
-  --bg: #eef3f0;
-  --bg-elevated: #f7faf8;
-  --fg: #1c2b26;
-  --fg-muted: #5a6b64;
-  --brand: #1f5c4a;
-  --brand-soft: #d7ebe3;
-  --accent: #b08537;
-  --accent-soft: #f3e6d4;
-  --line: #c9d6cf;
-  --ok: #2f6f55;
-  --warn: #8a6a2f;
-  --danger-soft: #8b5a4a;
-  --shadow: 0 10px 30px rgba(28, 43, 38, 0.08);
-  --radius: 1rem;
+  --bg: #e7efea;
+  --bg-elevated: #f5f9f6;
+  --fg: #152820;
+  --fg-muted: #4f655b;
+  --brand: #1a5746;
+  --brand-deep: #0f3a2f;
+  --brand-soft: #cfe6dc;
+  --accent: #c49a3c;
+  --accent-soft: #f4ead0;
+  --line: #c2d4cb;
+  --ok: #2d6a52;
+  --warn: #8a6d2e;
+  --danger-soft: #8a5d4f;
+  --shadow: 0 12px 28px rgba(15, 58, 47, 0.07);
+  --radius: 1.15rem;
+  --hero-from: #d7ebe3;
+  --hero-mid: #e8f1ec;
+  --hero-to: #e7efea;
 }
 
 .dark {
-  --bg: #121a17;
-  --bg-elevated: #1a2420;
-  --fg: #e7efea;
-  --fg-muted: #9aada4;
-  --brand: #7dbea8;
-  --brand-soft: #24352f;
-  --accent: #d4b483;
-  --accent-soft: #2c261c;
-  --line: #2c3b35;
-  --ok: #7dbea8;
-  --warn: #d4b483;
-  --danger-soft: #c89586;
-  --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  --bg: #0e1714;
+  --bg-elevated: #16211d;
+  --fg: #e8f1ec;
+  --fg-muted: #94a89e;
+  --brand: #86c4b0;
+  --brand-deep: #b7ddd0;
+  --brand-soft: #1d322b;
+  --accent: #d4b067;
+  --accent-soft: #2b2416;
+  --line: #2a3a33;
+  --ok: #86c4b0;
+  --warn: #d4b067;
+  --danger-soft: #c79a8c;
+  --shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+  --hero-from: #13241e;
+  --hero-mid: #101c18;
+  --hero-to: #0e1714;
 }
 
 @theme inline {
@@ -39,6 +47,7 @@
   --color-fg: var(--fg);
   --color-fg-muted: var(--fg-muted);
   --color-brand: var(--brand);
+  --color-brand-deep: var(--brand-deep);
   --color-brand-soft: var(--brand-soft);
   --color-accent: var(--accent);
   --color-accent-soft: var(--accent-soft);
@@ -61,20 +70,47 @@ body {
 
 body {
   margin: 0;
-  background:
-    radial-gradient(1200px 600px at 10% -10%, rgba(31, 92, 74, 0.12), transparent 55%),
-    radial-gradient(900px 500px at 100% 0%, rgba(176, 133, 74, 0.12), transparent 50%),
-    linear-gradient(180deg, var(--bg) 0%, color-mix(in oklab, var(--bg) 85%, var(--brand-soft)) 100%);
+  background: var(--bg);
   color: var(--fg);
   font-family: var(--font-figtree), "Segoe UI", sans-serif;
 }
 
-.dark body,
-:is(.dark) body {
+.bg-atmosphere {
   background:
-    radial-gradient(1000px 500px at 0% 0%, rgba(125, 190, 168, 0.12), transparent 50%),
-    radial-gradient(800px 400px at 100% 10%, rgba(212, 180, 131, 0.08), transparent 45%),
-    var(--bg);
+    radial-gradient(900px 480px at 12% -8%, color-mix(in oklab, var(--brand) 18%, transparent), transparent 60%),
+    radial-gradient(760px 420px at 92% 4%, color-mix(in oklab, var(--accent) 16%, transparent), transparent 55%),
+    linear-gradient(180deg, var(--hero-from), var(--hero-mid) 38%, var(--hero-to));
+}
+
+.bg-hero-wash {
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--brand-soft) 55%, transparent),
+    transparent
+  );
+}
+
+.atmosphere-orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(40px);
+  opacity: 0.45;
+}
+
+.atmosphere-orb-a {
+  top: 6%;
+  left: -8%;
+  width: 280px;
+  height: 280px;
+  background: color-mix(in oklab, var(--brand) 28%, transparent);
+}
+
+.atmosphere-orb-b {
+  top: 12%;
+  right: -10%;
+  width: 240px;
+  height: 240px;
+  background: color-mix(in oklab, var(--accent) 24%, transparent);
 }
 
 a {
@@ -92,7 +128,7 @@ select {
 @keyframes fade-up {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
@@ -106,19 +142,117 @@ select {
     opacity: 1;
   }
   50% {
-    opacity: 0.72;
+    opacity: 0.75;
+  }
+}
+
+@keyframes logo-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.03);
+  }
+}
+
+@keyframes drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(18px, 10px, 0);
+  }
+}
+
+@keyframes drift-slow {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(-14px, 16px, 0);
+  }
+}
+
+@keyframes dawn-rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
 }
 
 .animate-fade-up {
-  animation: fade-up 0.45s ease-out both;
+  animation: fade-up 0.5s ease-out both;
 }
 
 .animate-soft-pulse {
-  animation: soft-pulse 2.4s ease-in-out infinite;
+  animation: soft-pulse 2.6s ease-in-out infinite;
+}
+
+.animate-logo-breathe {
+  animation: logo-breathe 4.5s ease-in-out infinite;
+}
+
+.animate-drift {
+  animation: drift 14s ease-in-out infinite;
+}
+
+.animate-drift-slow {
+  animation: drift-slow 18s ease-in-out infinite;
+}
+
+.animate-dawn-rise {
+  animation: dawn-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.hero-panel {
+  position: relative;
+  overflow: hidden;
+  border-radius: calc(var(--radius) + 0.35rem);
+  padding: 1.6rem 1.35rem 1.5rem;
+  color: #f4faf7;
+  background:
+    linear-gradient(145deg, color-mix(in oklab, var(--brand-deep) 92%, #000) 0%, var(--brand) 58%, #2f7a63 100%);
+  box-shadow: var(--shadow);
+}
+
+.hero-panel::before {
+  content: "";
+  position: absolute;
+  inset: auto -20% -40% 20%;
+  height: 70%;
+  background: radial-gradient(circle, color-mix(in oklab, var(--accent) 35%, transparent), transparent 68%);
+  pointer-events: none;
+}
+
+.hero-panel > * {
+  position: relative;
+  z-index: 1;
+}
+
+.quiet-panel {
+  border-top: 1px solid var(--line);
+  padding-top: 1.25rem;
 }
 
 .prose-quiet p {
   color: var(--fg-muted);
-  line-height: 1.6;
+  line-height: 1.65;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-up,
+  .animate-soft-pulse,
+  .animate-logo-breathe,
+  .animate-drift,
+  .animate-drift-slow,
+  .animate-dawn-rise {
+    animation: none;
+  }
 }
