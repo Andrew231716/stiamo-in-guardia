@@ -382,9 +382,17 @@ function ImpostazioniForm({ initialName }: { initialName: string }) {
       </Card>
 
       <Card>
-        <h3 className="font-semibold">Generazione AI (opzionale)</h3>
+        <h3 className="font-semibold">Coach AI (opzionale)</h3>
         <p className="mt-1 text-sm text-fg-muted">
-          Disattivata di default. Se abilitata, i dati personali vengono inviati solo con il tuo consenso esplicito.
+          Analizza le risposte di attività e check-in: cosa avresti potuto fare e cosa cambiare. La base sono JW.org /
+          WOL e siti ufficiali di psicologia/salute (NIMH, NHS, WHO, APA…). L&apos;analisi locale è sempre gratuita e
+          resta sul dispositivo.
+        </p>
+        <p className="mt-2 text-sm text-fg-muted">
+          Per l&apos;AI cloud gratuita puoi impostare su Vercel una chiave{" "}
+          <strong className="font-semibold text-fg">GROQ_API_KEY</strong> (console.groq.com) oppure{" "}
+          <strong className="font-semibold text-fg">GEMINI_API_KEY</strong>. Senza chiave cloud, l&apos;app usa comunque
+          l&apos;analisi locale.
         </p>
         <label className="mt-3 flex items-center gap-2 text-sm">
           <input
@@ -392,7 +400,8 @@ function ImpostazioniForm({ initialName }: { initialName: string }) {
             checked={prefs.aiConsent}
             onChange={(e) => void updatePreferences({ aiConsent: e.target.checked, aiEnabled: e.target.checked })}
           />
-          Acconsento all&apos;invio di dati di contesto (non dettagli espliciti) a un provider AI server-side
+          Acconsento all&apos;invio di dati di contesto (non dettagli espliciti) a un provider AI server-side quando
+          scelgo l&apos;analisi cloud
         </label>
       </Card>
 

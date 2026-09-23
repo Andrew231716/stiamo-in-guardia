@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { chatWithAvailableProvider, hasCloudAiProvider } from "@/lib/ai/providers";
 
 const bodySchema = z.object({
   consent: z.literal(true),
@@ -11,9 +12,8 @@ const bodySchema = z.object({
 });
 
 /**
- * Generazione AI opzionale (Modalità B).
- * Richiede OPENAI_API_KEY (solo server). Senza chiave, risponde con istruzioni.
- * Non accettare richieste senza consent=true.
+ * Generazione AI opzionale di un'attività (Modalità B).
+ * Usa Groq / Gemini / OpenAI se configurati; altrimenti fallback locale.
  */
 export async function POST(request: Request) {
   try {
@@ -26,12 +26,11 @@ export async function POST(request: Request) {
       );
     }
 
-    const apiKey = process.env.OPENAI_API_KEY;
-    if (!apiKey) {
+    if (!hasCloudAiProvider()) {
       return NextResponse.json({
         mode: "local_fallback",
         message:
-          "Provider AI non configurato. Usa la libreria locale. Per abilitare: imposta OPENAI_API_KEY su Vercel e ridistribuisci.",
+          "Provider AI cloud non configurato. Usa la libreria locale di attività. Per abilitare: imposta GROQ_API_KEY (gratuito) o GEMINI_API_KEY / OPENAI_API_KEY su Vercel.",
       });
     }
 
@@ -47,34 +46,24 @@ export async function POST(request: Request) {
       "Rispondi solo JSON con campi: title, durationMinutes, objective, introduction, scriptureReferences, instructions, writingPrompt, reflectionQuestion, dailyAction.",
     ].join("\n");
 
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: process.env.OPENAI_MODEL ?? "gpt-4o-mini",
-        messages: [
-          { role: "system", content: "Generi solo JSON valido per attività spirituali equilibrate." },
-          { role: "user", content: prompt },
-        ],
-        temperature: 0.7,
-      }),
-    });
-
-    if (!response.ok) {
+    try {
+      const cloud = await chatWithAvailableProvider([
+        { role: "system", content: "Generi solo JSON valido per attività spirituali equilibrate." },
+        { role: "user", content: prompt },
+      ]);
+      if (!cloud) {
+        return NextResponse.json({
+          mode: "local_fallback",
+          message: "Nessun provider AI disponibile.",
+        });
+      }
+      return NextResponse.json({ mode: cloud.mode, content: cloud.content, provider: cloud.label });
+    } catch {
       return NextResponse.json(
         { error: "Il provider AI ha restituito un errore.", mode: "local_fallback" },
         { status: 502 },
       );
     }
-
-    const payload = (await response.json()) as {
-      choices?: Array<{ message?: { content?: string } }>;
-    };
-    const content = payload.choices?.[0]?.message?.content ?? "{}";
-    return NextResponse.json({ mode: "ai", content });
   } catch {
     return NextResponse.json({ error: "Errore interno", mode: "local_fallback" }, { status: 500 });
   }

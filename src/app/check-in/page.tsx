@@ -17,6 +17,7 @@ import type { ChainStage, DailyCheckin, EpisodeStatus, ImpulseStatus } from "@/l
 import { yesterdayIso } from "@/lib/utils/date";
 import { buildCheckinInsight } from "@/lib/reports/checkinInsight";
 import { CheckinInsightCard } from "@/components/reports/CheckinInsightCard";
+import { AiCoachPanel } from "@/components/ai/AiCoachPanel";
 
 function CheckInFormInner({ date, existing }: { date: string; existing?: DailyCheckin }) {
   const { upsertCheckin, deleteCheckin, data } = useApp();
@@ -372,6 +373,27 @@ function CheckInFormInner({ date, existing }: { date: string; existing?: DailyCh
       {saved ? <p className="text-center text-sm text-ok">Check-in salvato. Puoi modificarlo in qualsiasi momento.</p> : null}
 
       {showInsight ? <CheckinInsightCard insight={insight} /> : null}
+
+      {showInsight ? (
+        <AiCoachPanel
+          input={{
+            kind: "checkin",
+            date,
+            pornographyStatus,
+            masturbationStatus,
+            involuntaryImpulseStatus,
+            triggers,
+            chainStage,
+            strategiesUsed,
+            smallVictory: smallVictory || undefined,
+            improvementNote: improvementNote || undefined,
+            prayerCompleted,
+            interruptionPoint: interruptionPoint || undefined,
+            preventiveAdjustment: preventiveAdjustment || undefined,
+            notesSnippet: notes.trim() ? notes.trim().slice(0, 400) : undefined,
+          }}
+        />
+      ) : null}
     </div>
   );
 }

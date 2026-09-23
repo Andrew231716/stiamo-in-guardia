@@ -10,7 +10,7 @@ Web app personale (PWA) per attività spirituali quotidiane, check-in, report e 
 - Persistenza **local-first** con IndexedDB (funziona offline senza credenziali)
 - Supabase predisposto (auth + RLS) — opzionale
 - Recharts per i report
-- Generazione attività: libreria locale (63 attività) + endpoint AI opzionale
+- Generazione / coach AI: analisi locale gratuita + provider cloud opzionale (Groq gratuito, Gemini, OpenAI)
 - Deploy previsto su **Vercel**
 
 ## Avvio locale
@@ -31,10 +31,14 @@ NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
 OPENAI_API_KEY=
 OPENAI_MODEL=gpt-4o-mini
+GROQ_API_KEY=
+GROQ_MODEL=llama-3.1-8b-instant
+GEMINI_API_KEY=
 ```
 
 - Senza Supabase: l’app usa solo IndexedDB sul dispositivo.
-- Senza `OPENAI_API_KEY`: la Modalità B AI risponde con fallback locale.
+- Senza chiavi AI cloud: il **coach locale** analizza comunque check-in e attività (gratuito, sul dispositivo).
+- Con `GROQ_API_KEY` (consigliato, piano gratuito su [console.groq.com](https://console.groq.com)) o `GEMINI_API_KEY`, l’analisi può usare il modello cloud con consenso esplicito.
 - **Non** mettere mai la `service_role` key nel client.
 
 ## Supabase
@@ -60,6 +64,7 @@ Le policy RLS garantiscono che ogni utente legga/scriva solo i propri dati.
 - Report settimanali e mensili basati solo su dati presenti
 - Modalità «Sono stanco o poco lucido»
 - Fonti spirituali (JW.org / WOL) e cliniche ufficiali
+- Coach AI su attività e check-in (locale gratis + cloud opzionale, fonti JW.org e siti ufficiali di psicologia)
 - Export / import / cancellazione dati
 - Promemoria locali discreti
 

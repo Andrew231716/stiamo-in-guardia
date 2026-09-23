@@ -194,7 +194,7 @@ export function buildMonthlyHabitAssessment(params: {
     riskDirection === "improving"
       ? "Ti stai allontanando dal rischio di automatismo"
       : riskDirection === "worsening"
-        ? "Ti stai avvicinando a un rischio di abitudine più forte"
+        ? "Ti stai avvicinando a un'abitudine più radicata"
         : riskDirection === "stable"
           ? "Il rischio appare stabile rispetto al mese scorso"
           : "Confronto mensile non ancora disponibile";

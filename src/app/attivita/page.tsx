@@ -8,6 +8,7 @@ import { ScriptureList } from "@/components/bible/ScriptureLink";
 import type { DailyActivityRecord } from "@/lib/types";
 import { ACTIVITY_CATEGORY_LABELS } from "@/lib/types";
 import { todayIso } from "@/lib/utils/date";
+import { AiCoachPanel } from "@/components/ai/AiCoachPanel";
 
 function ActivityForm({ activity }: { activity: DailyActivityRecord }) {
   const { saveActivityProgress, replaceTodayActivity, data } = useApp();
@@ -156,6 +157,25 @@ function ActivityForm({ activity }: { activity: DailyActivityRecord }) {
       {draftSaved && !saved ? (
         <p className="text-center text-sm text-ok">Bozza salvata. Puoi riprendere quando vuoi.</p>
       ) : null}
+
+      {(saved || draftSaved || response.trim() || reflection.trim()) && (
+        <AiCoachPanel
+          input={{
+            kind: "activity",
+            date: activity.date,
+            title: activity.title,
+            category: activity.category,
+            objective: activity.objective,
+            writingPrompt: activity.writingPrompt,
+            reflectionQuestion: activity.reflectionQuestion,
+            dailyAction: activity.dailyAction,
+            scriptureReferences: activity.scriptureReferences,
+            personalResponse: response.trim() || undefined,
+            reflectionAnswer: reflection.trim() || undefined,
+            completed: Boolean(activity.completedAt) || saved,
+          }}
+        />
+      )}
     </div>
   );
 }
