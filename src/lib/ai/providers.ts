@@ -37,7 +37,7 @@ export async function chatWithAvailableProvider(
   messages: ChatMessage[],
 ): Promise<ProviderChatResult | null> {
   if (hasGroq()) {
-    const model = process.env.GROQ_MODEL?.trim() || "llama-3.1-8b-instant";
+    const model = process.env.GROQ_MODEL?.trim() || "llama-3.3-70b-versatile";
     const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
       headers: {
