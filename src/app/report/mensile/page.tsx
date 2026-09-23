@@ -16,6 +16,8 @@ import {
 import { useApp } from "@/components/providers/AppProvider";
 import { Card, SectionTitle } from "@/components/ui/Card";
 import { buildReport } from "@/lib/reports/buildReport";
+import { buildMonthlyHabitAssessment } from "@/lib/reports/monthlyAssessment";
+import { MonthlyAssessmentCard } from "@/components/reports/MonthlyAssessmentCard";
 import { monthBounds, formatShortDate } from "@/lib/utils/date";
 import { parseISO, startOfWeek, format } from "date-fns";
 import { it } from "date-fns/locale";
@@ -55,15 +57,27 @@ export default function MonthlyReportPage() {
     };
   }, [ready, data, bounds.startDate, bounds.endDate]);
 
-  if (!ready || !report) return <p className="text-fg-muted">Generazione report…</p>;
+  const assessment = useMemo(() => {
+    if (!ready) return null;
+    return buildMonthlyHabitAssessment({
+      checkins: data.checkins,
+      preferences: data.preferences,
+      startDate: bounds.startDate,
+      endDate: bounds.endDate,
+    });
+  }, [ready, data.checkins, data.preferences, bounds.startDate, bounds.endDate]);
+
+  if (!ready || !report || !assessment) return <p className="text-fg-muted">Generazione report…</p>;
 
   return (
     <div className="space-y-4 animate-fade-up">
       <SectionTitle title="Report mensile" subtitle={`Periodo ${report.startDate} → ${report.endDate}`} />
 
+      <MonthlyAssessmentCard assessment={assessment} />
+
       {report.insufficientData ? (
         <Card>
-          <p className="text-warn">Dati insufficienti</p>
+          <p className="text-warn">Dati insufficienti per alcuni grafici di dettaglio</p>
           <p className="mt-2 text-sm text-fg-muted">
             Non mostriamo percentuali fuorvianti. Completa più check-in per un andamento più leggibile.
           </p>

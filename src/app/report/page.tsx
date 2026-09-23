@@ -23,7 +23,7 @@ export default function ReportIndexPage() {
       <Card>
         <h3 className="font-[family-name:var(--font-fraunces)] text-xl">Report mensile</h3>
         <p className="mt-2 text-sm text-fg-muted">
-          Andamento, calendario dei check-in e obiettivi per il mese successivo.
+          Scheda valutativa (gravità e rischio di abitudine), grafico ricadute/vittorie, calendario e obiettivi.
         </p>
         <Link href="/report/mensile" className="mt-4 block">
           <Button className="w-full">Apri mensile</Button>

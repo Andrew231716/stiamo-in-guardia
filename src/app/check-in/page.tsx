@@ -15,6 +15,8 @@ import {
 } from "@/data/catalog";
 import type { ChainStage, DailyCheckin, EpisodeStatus, ImpulseStatus } from "@/lib/types";
 import { yesterdayIso } from "@/lib/utils/date";
+import { buildCheckinInsight } from "@/lib/reports/checkinInsight";
+import { CheckinInsightCard } from "@/components/reports/CheckinInsightCard";
 
 function CheckInFormInner({ date, existing }: { date: string; existing?: DailyCheckin }) {
   const { upsertCheckin, deleteCheckin, data } = useApp();
@@ -33,7 +35,8 @@ function CheckInFormInner({ date, existing }: { date: string; existing?: DailyCh
   const [notes, setNotes] = useState(existing?.notes ?? "");
   const [preventiveAdjustment, setPreventiveAdjustment] = useState(existing?.preventiveAdjustment ?? "");
   const [interruptionPoint, setInterruptionPoint] = useState(existing?.interruptionPoint ?? "");
-  const [saved, setSaved] = useState(false);
+  const [saved, setSaved] = useState(Boolean(existing));
+  const [showInsight, setShowInsight] = useState(Boolean(existing));
 
   const strategies = useMemo(
     () => [...STRATEGY_CATALOG, ...data.customStrategies],
@@ -43,6 +46,36 @@ function CheckInFormInner({ date, existing }: { date: string; existing?: DailyCh
   const relapse = pornographyStatus === "episode" || masturbationStatus === "episode";
   const needsPatienceFocus = triggers.some((t) =>
     (PATIENCE_FOCUS_TRIGGER_IDS as readonly string[]).includes(t),
+  );
+
+  const insight = useMemo(
+    () =>
+      buildCheckinInsight(
+        {
+          pornographyStatus,
+          masturbationStatus,
+          involuntaryImpulseStatus,
+          triggers,
+          chainStage,
+          strategiesUsed,
+          smallVictory,
+          prayerCompleted,
+          interruptionPoint,
+        },
+        data.customStrategies,
+      ),
+    [
+      pornographyStatus,
+      masturbationStatus,
+      involuntaryImpulseStatus,
+      triggers,
+      chainStage,
+      strategiesUsed,
+      smallVictory,
+      prayerCompleted,
+      interruptionPoint,
+      data.customStrategies,
+    ],
   );
 
   const toggle = (list: string[], id: string, setter: (v: string[]) => void) => {
@@ -316,6 +349,7 @@ function CheckInFormInner({ date, existing }: { date: string; existing?: DailyCh
             interruptionPoint,
           });
           setSaved(true);
+          setShowInsight(true);
         }}
       >
         Salva check-in
@@ -328,6 +362,7 @@ function CheckInFormInner({ date, existing }: { date: string; existing?: DailyCh
           onClick={async () => {
             await deleteCheckin(existing.id);
             setSaved(false);
+            setShowInsight(false);
           }}
         >
           Elimina questa registrazione
@@ -335,6 +370,8 @@ function CheckInFormInner({ date, existing }: { date: string; existing?: DailyCh
       ) : null}
 
       {saved ? <p className="text-center text-sm text-ok">Check-in salvato. Puoi modificarlo in qualsiasi momento.</p> : null}
+
+      {showInsight ? <CheckinInsightCard insight={insight} /> : null}
     </div>
   );
 }
