@@ -180,7 +180,7 @@ export function buildMonthlyHabitAssessment(params: {
         ? "Gravità complessiva: contenuta"
         : severityBand === "moderate"
           ? "Gravità complessiva: media"
-          : "Gravità complessiva: da attenzionare";
+          : "Gravità complessiva: da tenere d'occhio";
 
   const severitySummary = insufficientData
     ? "Servono almeno 3 check-in nel mese per una scheda affidabile. Continua a registrare con sincerità."
@@ -188,7 +188,7 @@ export function buildMonthlyHabitAssessment(params: {
       ? "Nel mese gli episodi sono relativamente pochi rispetto ai check-in, o sono stati spesso interrotti / accompagnati da strategie. L'errore, quando c'è, resta un segnale da correggere — non un'identità."
       : severityBand === "moderate"
         ? "Ci sono episodi ricorrenti o un coinvolgimento più frequente nella sequenza. Non è una condanna: indica che serve rafforzare protezioni precoci (ambiente, telefono, preghiera)."
-        : "Gli episodi o la profondità nella sequenza sono più frequenti. È un invito a intervenire prima e con più costanza, magari anche chiedendo aiuto spirituale di fiducia — senza vergogna.";
+        : "Gli episodi sono più frequenti, oppure arrivi più avanti nella sequenza. È un invito a intervenire prima e con più costanza, magari anche chiedendo sostegno a un responsabile spirituale di fiducia — senza vergogna.";
 
   const riskDirectionLabel =
     riskDirection === "improving"
@@ -255,7 +255,7 @@ export function buildMonthlyHabitAssessment(params: {
     }
 
     focusActions.push(
-      "Interrompi più all'inizio: obiettivo «impulso → telefono fuori portata» entro pochi secondi.",
+      "Interrompi prima nella sequenza: obiettivo «impulso → telefono fuori portata» entro pochi secondi.",
     );
     focusActions.push("Nei tuoi orari vulnerabili, prepara ambiente e telefono la sera prima.");
     if (withPrayer < 2) {
@@ -286,7 +286,7 @@ export function buildMonthlyHabitAssessment(params: {
     focusActions: [...new Set(focusActions)].slice(0, 4),
     series: buildRelapseVictorySeries(checkins, preferences, startDate, endDate),
     disclaimer:
-      "Scheda di consapevolezza spirituale e comportamentale personale. Non è una diagnosi clinica di dipendenza e non sostituisce medici, psicologi o un responsabile spirituale.",
+      "Scheda personale di consapevolezza spirituale e comportamentale. Non è una diagnosi clinica di dipendenza e non sostituisce medici, psicologi o un responsabile spirituale.",
   };
 }
 

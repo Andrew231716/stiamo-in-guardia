@@ -28,7 +28,7 @@ export default function FrustrazionePage() {
       <Card>
         <h3 className="font-semibold">Cosa fare adesso (2–5 minuti)</h3>
         <ol className="mt-3 list-decimal space-y-2 pl-5 text-fg-muted">
-          <li>Riconosci: «Sto frustrato / scoraggiato» — non è un comando a cedere.</li>
+          <li>Riconosci: «Mi sento frustrato / scoraggiato» — non è un comando a cedere.</li>
           <li>Posa il telefono fuori portata o cambia stanza.</li>
           <li>Rivolgiti a Geova con una frase sincera, anche se breve.</li>
           <li>Scegli un&apos;azione buona concreta: leggere un versetto, uscire, un compito utile, chiamare un amico.</li>

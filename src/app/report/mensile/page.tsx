@@ -194,7 +194,7 @@ export default function MonthlyReportPage() {
       </Card>
 
       <Card>
-        <h3 className="font-semibold">Difficoltà da attenzionare</h3>
+        <h3 className="font-semibold">Difficoltà a cui prestare attenzione</h3>
         {report.recurringDifficulties.length ? (
           <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-fg-muted">
             {report.recurringDifficulties.map((v) => (

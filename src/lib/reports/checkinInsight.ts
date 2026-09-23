@@ -23,7 +23,7 @@ const STAGE_ORDER: ChainStage[] = ["trigger", "impulse", "phone", "search", "act
 
 const STAGE_ACTIONS: Partial<Record<ChainStage, string[]>> = {
   trigger: [
-    "Nomina ad alta voce il trigger («Sto annoiato / solo / stanco») — riconoscerlo spezza l'automaticità.",
+    "Nomina ad alta voce il trigger («Sono annoiato / solo / stanco»): riconoscerlo spezza l'automatismo.",
     "Cambia subito stanza o attività prima che l'impulso cresca.",
     "Rivolgiti a Geova con una frase breve e sincera.",
   ],
@@ -43,7 +43,7 @@ const STAGE_ACTIONS: Partial<Record<ChainStage, string[]>> = {
     "Esci da Internet per 15 minuti e fai un'azione concreta (ordine, passeggiata, chiamata).",
   ],
   action: [
-    "La prossima volta punta a interrompere al telefono o all'impulso — più all'inizio, più è facile.",
+    "La prossima volta punta a interrompere al momento del telefono o dell'impulso: più è precoce, più è facile.",
     "Prepara stanotte l'ambiente (telefono fuori dalla stanza) prima che arrivi la fatica.",
     "Annota un piano se-allora per lo stesso trigger.",
   ],
@@ -56,7 +56,7 @@ const TRIGGER_ACTIONS: Record<string, string> = {
   anxiety: "Rallenta il corpo (respiri lunghi) e posa il telefono prima di cercare sollievo online.",
   sadness: "Chiedi sostegno a Geova e a una persona di fiducia; non restare da solo con lo sconforto.",
   frustration: "Riempi la mente di qualcosa di buono invece di fissare il desiderio o l'irritazione.",
-  marriage_wait: "Coltica pazienza e un'azione edificante concreta, senza decisioni dettate dalla frustrazione.",
+  marriage_wait: "Coltiva pazienza e un'azione edificante concreta, senza decisioni dettate dalla frustrazione.",
   discouragement: "Interrompi lo scoraggiamento con un passo piccolo e buono; non lasciare la mente vuota.",
   fatigue: "Quando sei stanco, riduci le decisioni: piano se-allora già pronto + telefono lontano.",
   drowsiness: "Non restare a letto con il telefono se sei assonnato; carica il dispositivo altrove.",
@@ -162,7 +162,7 @@ function computeDaySeverity(c: Pick<
     return {
       level: "elevated",
       label: "Episodio più avanzato nella sequenza",
-      note: "Non è una condanna: è un segnale che la sequenza è andata avanti. La prossima protezione va messa più all'inizio (telefono / impulso).",
+      note: "Non è una condanna: è un segnale che la sequenza è andata avanti. La prossima protezione va messa prima, all'impulso o al telefono.",
     };
   }
 
@@ -257,12 +257,12 @@ export function buildCheckinInsight(
       "Continua a coltivare protezioni concrete: non è solo «tenere duro», è costruire un'abitudine buona.";
   } else if (severity.level === "low") {
     tone = "learning";
-    headline = "Dove potevi agire — e cosa fare ora";
+    headline = "Dove avresti potuto agire — e cosa fare ora";
     encouragement =
       "Hai interrotto relativamente presto. La prossima volta punta ancora un passo prima.";
   } else {
     tone = "learning";
-    headline = "Dove potevi agire — e cosa fare ora";
+    headline = "Dove avresti potuto agire — e cosa fare ora";
     encouragement =
       "Una ricaduta non cancella i progressi. Serve una protezione più precoce, non più vergogna.";
   }

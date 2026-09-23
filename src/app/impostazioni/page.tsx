@@ -284,8 +284,8 @@ function ImpostazioniForm({ initialName }: { initialName: string }) {
         <h3 className="font-semibold">Promemoria</h3>
         <p className="mt-1 text-sm text-fg-muted">
           Testi discreti, senza dettagli sensibili. Su telefono: installa l&apos;app sulla schermata Home e concedi il
-          permesso notifiche. I promemoria partono in modo affidabile mentre l&apos;app è aperta o in memoria; se era
-          chiusa, al prossimo apertura ricevi quelli scaduti (catch-up).
+          permesso alle notifiche. I promemoria partono in modo affidabile mentre l&apos;app è aperta o in memoria; se
+          era chiusa, alla prossima apertura ricevi quelli scaduti (catch-up).
         </p>
         <p className="mt-2 text-xs text-fg-muted">
           Stato permesso:{" "}
@@ -373,7 +373,7 @@ function ImpostazioniForm({ initialName }: { initialName: string }) {
             else if (result === "denied")
               setNotifMsg("Permesso negato: abilita le notifiche per questo sito nelle impostazioni del sistema.");
             else if (result === "unsupported") setNotifMsg("Notifiche non supportate su questo browser.");
-            else setNotifMsg("Invio della notifica di prova non riuscito.");
+            else setNotifMsg("L'invio della notifica di prova non è riuscito.");
           }}
         >
           Invia notifica di prova
@@ -384,7 +384,7 @@ function ImpostazioniForm({ initialName }: { initialName: string }) {
       <Card>
         <h3 className="font-semibold">Generazione AI (opzionale)</h3>
         <p className="mt-1 text-sm text-fg-muted">
-          Disattivata di default. Se abilitata, i dati personale vengono inviati solo con il tuo consenso esplicito.
+          Disattivata di default. Se abilitata, i dati personali vengono inviati solo con il tuo consenso esplicito.
         </p>
         <label className="mt-3 flex items-center gap-2 text-sm">
           <input

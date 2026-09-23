@@ -50,7 +50,7 @@ export default function StanchezzaPage() {
 
       <Link href="/frustrazione">
         <Button variant="secondary" className="w-full">
-          È più frustrazione o scoraggiamento
+          Se è più frustrazione o scoraggiamento
         </Button>
       </Link>
 
