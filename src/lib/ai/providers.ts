@@ -48,10 +48,12 @@ export async function chatWithAvailableProvider(
         model,
         messages,
         temperature: 0.4,
-        response_format: { type: "json_object" },
       }),
     });
-    if (!res.ok) throw new Error(`Groq error ${res.status}`);
+    if (!res.ok) {
+      const detail = (await res.text()).slice(0, 240);
+      throw new Error(`Groq error ${res.status}: ${detail}`);
+    }
     const payload = (await res.json()) as { choices?: Array<{ message?: { content?: string } }> };
     return {
       mode: "groq",

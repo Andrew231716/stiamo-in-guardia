@@ -93,8 +93,12 @@ export async function POST(request: Request) {
       const enriched = parseCloudCoachResult(cloud.content, cloud.mode, cloud.label, input.kind);
       if (!enriched) {
         return NextResponse.json({
-          result: { ...local, summary: `${local.summary} (Il modello cloud non ha restituito JSON valido: uso analisi locale.)` },
+          result: {
+            ...local,
+            summary: `${local.summary} (Il modello cloud non ha restituito JSON valido: uso analisi locale.)`,
+          },
           providers: listAvailableAiProviders(),
+          cloudError: "invalid_json",
         });
       }
 
@@ -102,13 +106,15 @@ export async function POST(request: Request) {
         result: enriched,
         providers: listAvailableAiProviders(),
       });
-    } catch {
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "unknown";
       return NextResponse.json({
         result: {
           ...local,
           summary: `${local.summary} (Provider cloud non raggiungibile: analisi locale.)`,
         },
         providers: listAvailableAiProviders(),
+        cloudError: message.slice(0, 180),
       });
     }
   } catch {
