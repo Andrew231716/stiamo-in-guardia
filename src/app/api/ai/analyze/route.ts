@@ -7,10 +7,11 @@ import {
 import {
   buildAnalyzeSystemPrompt,
   buildAnalyzeUserPrompt,
+  buildJsonRetryPrompt,
   parseCloudCoachResult,
 } from "@/lib/ai/prompts";
 import { chatWithAvailableProvider, hasCloudAiProvider, listAvailableAiProviders } from "@/lib/ai/providers";
-import type { ActivityCoachInput, CheckinCoachInput } from "@/lib/ai/types";
+import type { ActivityCoachInput, AiCoachResult, CheckinCoachInput } from "@/lib/ai/types";
 
 const checkinSchema = z.object({
   kind: z.literal("checkin"),
@@ -54,6 +55,40 @@ function localFor(input: CheckinCoachInput | ActivityCoachInput) {
   return input.kind === "checkin" ? buildLocalCheckinCoach(input) : buildLocalActivityCoach(input);
 }
 
+async function analyzeWithCloud(
+  input: CheckinCoachInput | ActivityCoachInput,
+): Promise<{ result: AiCoachResult | null; label?: string; rawPreview?: string }> {
+  const system = buildAnalyzeSystemPrompt();
+  const user = buildAnalyzeUserPrompt(input);
+
+  const first = await chatWithAvailableProvider([
+    { role: "system", content: system },
+    { role: "user", content: user },
+  ]);
+  if (!first) return { result: null };
+
+  let parsed = parseCloudCoachResult(first.content, first.mode, first.label, input.kind);
+  if (parsed) return { result: parsed, label: first.label };
+
+  // Secondo tentativo: forza JSON puro
+  const second = await chatWithAvailableProvider([
+    { role: "system", content: system },
+    { role: "user", content: user },
+    { role: "assistant", content: first.content.slice(0, 1200) },
+    { role: "user", content: buildJsonRetryPrompt() },
+  ]);
+  if (!second) {
+    return { result: null, label: first.label, rawPreview: first.content.slice(0, 200) };
+  }
+
+  parsed = parseCloudCoachResult(second.content, second.mode, second.label, input.kind);
+  return {
+    result: parsed,
+    label: second.label,
+    rawPreview: parsed ? undefined : second.content.slice(0, 200),
+  };
+}
+
 /**
  * Analisi coach su check-in o attività.
  * - Con GROQ_API_KEY / GEMINI_API_KEY / OPENAI_API_KEY: arricchisce via cloud (richiede consent).
@@ -81,30 +116,22 @@ export async function POST(request: Request) {
     }
 
     try {
-      const cloud = await chatWithAvailableProvider([
-        { role: "system", content: buildAnalyzeSystemPrompt() },
-        { role: "user", content: buildAnalyzeUserPrompt(input) },
-      ]);
-
-      if (!cloud) {
-        return NextResponse.json({ result: local, providers: listAvailableAiProviders() });
-      }
-
-      const enriched = parseCloudCoachResult(cloud.content, cloud.mode, cloud.label, input.kind);
-      if (!enriched) {
+      const cloud = await analyzeWithCloud(input);
+      if (cloud.result) {
         return NextResponse.json({
-          result: {
-            ...local,
-            summary: `${local.summary} (Il modello cloud non ha restituito JSON valido: uso analisi locale.)`,
-          },
+          result: cloud.result,
           providers: listAvailableAiProviders(),
-          cloudError: "invalid_json",
         });
       }
 
       return NextResponse.json({
-        result: enriched,
+        result: {
+          ...local,
+          summary: `${local.summary} (Analisi cloud non strutturata: uso quella locale.)`,
+        },
         providers: listAvailableAiProviders(),
+        cloudError: "invalid_json",
+        cloudRawPreview: cloud.rawPreview,
       });
     } catch (err) {
       const message = err instanceof Error ? err.message : "unknown";

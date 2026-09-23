@@ -2,13 +2,85 @@ import { z } from "zod";
 import { sourcesCatalogForPrompt, coachDisclaimer, pickCoachSources } from "@/lib/ai/sourcesForCoach";
 import type { AiCoachInput, AiCoachResult, AiCoachMode } from "@/lib/ai/types";
 
-const resultSchema = z.object({
-  summary: z.string().min(1),
-  whatCouldHaveDone: z.array(z.string()).min(1).max(8),
-  whatToChange: z.array(z.string()).min(1).max(8),
-  nextSteps: z.array(z.string()).min(1).max(8),
-  sourceIdsOrTitles: z.array(z.string()).max(8).optional(),
+function asStringArray(value: unknown): string[] {
+  if (Array.isArray(value)) {
+    return value.map((v) => String(v).trim()).filter(Boolean);
+  }
+  if (typeof value === "string" && value.trim()) {
+    return value
+      .split(/\n|•|- /)
+      .map((s) => s.replace(/^[\d).]+\s*/, "").trim())
+      .filter(Boolean);
+  }
+  return [];
+}
+
+const looseResultSchema = z.object({
+  summary: z.union([z.string(), z.number()]).transform((v) => String(v).trim()),
+  whatCouldHaveDone: z.unknown().optional(),
+  whatToChange: z.unknown().optional(),
+  nextSteps: z.unknown().optional(),
+  // alias comuni usati dai modelli
+  cosaAvrestiPotutoFare: z.unknown().optional(),
+  cosaCambiare: z.unknown().optional(),
+  prossimiPassi: z.unknown().optional(),
+  sourceIdsOrTitles: z.unknown().optional(),
 });
+
+export function extractJsonObject(raw: string): unknown | null {
+  if (!raw?.trim()) return null;
+  let text = raw.trim();
+
+  // Rimuovi fence markdown
+  text = text.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "").trim();
+
+  // Alcuni modelli (gpt-oss) avvolgono ragionamento / canali
+  text = text
+    .replace(/<\|[^>]+\|>/g, " ")
+    .replace(/<\/?think>/gi, " ")
+    .replace(/<\/?reasoning>/gi, " ")
+    .trim();
+
+  // Prova parse diretto
+  try {
+    return JSON.parse(text) as unknown;
+  } catch {
+    /* continua */
+  }
+
+  // Estrai il primo oggetto { ... } bilanciato
+  const start = text.indexOf("{");
+  if (start < 0) return null;
+  let depth = 0;
+  let inString = false;
+  let escape = false;
+  for (let i = start; i < text.length; i++) {
+    const ch = text[i];
+    if (inString) {
+      if (escape) escape = false;
+      else if (ch === "\\") escape = true;
+      else if (ch === '"') inString = false;
+      continue;
+    }
+    if (ch === '"') {
+      inString = true;
+      continue;
+    }
+    if (ch === "{") depth += 1;
+    if (ch === "}") {
+      depth -= 1;
+      if (depth === 0) {
+        const slice = text.slice(start, i + 1);
+        try {
+          return JSON.parse(slice) as unknown;
+        } catch {
+          return null;
+        }
+      }
+    }
+  }
+  return null;
+}
 
 export function buildAnalyzeSystemPrompt(): string {
   return [
@@ -19,7 +91,9 @@ export function buildAnalyzeSystemPrompt(): string {
     "Distingui chiaramente: prospettive spirituali (JW.org) vs contesto clinico generale (NIMH, NHS, WHO, APA, SAMHSA, VA).",
     "Non dare diagnosi di dipendenza. Non chiedere dettagli espliciti.",
     "Suggerisci azioni concrete: dove interrompere la sequenza, cosa cambiare nell'ambiente, cosa coltivare.",
-    "Output JSON obbligatorio con campi: summary (string), whatCouldHaveDone (string[]), whatToChange (string[]), nextSteps (string[]), sourceIdsOrTitles (string[] titoli delle fonti usate).",
+    "IMPORTANTE: la tua intera risposta deve essere UN SOLO oggetto JSON valido, senza markdown, senza testo prima o dopo.",
+    'Schema esatto: {"summary":"stringa","whatCouldHaveDone":["..."],"whatToChange":["..."],"nextSteps":["..."],"sourceIdsOrTitles":["..."]}',
+    "Ogni array deve avere da 2 a 5 stringhe brevi in italiano.",
     "",
     "FONTI CONSENTITE:",
     sourcesCatalogForPrompt(),
@@ -30,13 +104,23 @@ export function buildAnalyzeUserPrompt(input: AiCoachInput): string {
   if (input.kind === "checkin") {
     return [
       "Analizza questo check-in e indica cosa avrei potuto fare e cosa cambiare.",
+      "Rispondi SOLO con JSON valido secondo lo schema indicato.",
       JSON.stringify(input, null, 2),
     ].join("\n");
   }
   return [
     "Analizza le risposte a questa attività spirituale e indica cosa avrei potuto fare meglio e cosa cambiare.",
+    "Rispondi SOLO con JSON valido secondo lo schema indicato.",
     JSON.stringify(input, null, 2),
   ].join("\n");
+}
+
+export function buildJsonRetryPrompt(): string {
+  return [
+    "La risposta precedente non era JSON valido.",
+    "Rispondi ADESSO con UN SOLO oggetto JSON, nient'altro.",
+    'Esempio: {"summary":"...","whatCouldHaveDone":["..."],"whatToChange":["..."],"nextSteps":["..."],"sourceIdsOrTitles":["..."]}',
+  ].join(" ");
 }
 
 export function parseCloudCoachResult(
@@ -46,26 +130,42 @@ export function parseCloudCoachResult(
   kind: AiCoachInput["kind"],
 ): AiCoachResult | null {
   try {
-    const cleaned = raw.replace(/^```json\s*/i, "").replace(/```$/i, "").trim();
-    const json = JSON.parse(cleaned) as unknown;
-    const parsed = resultSchema.safeParse(json);
+    const json = extractJsonObject(raw);
+    if (!json || typeof json !== "object") return null;
+    const parsed = looseResultSchema.safeParse(json);
     if (!parsed.success) return null;
+
+    const summary = parsed.data.summary;
+    if (!summary) return null;
+
+    const whatCouldHaveDone = asStringArray(
+      parsed.data.whatCouldHaveDone ?? parsed.data.cosaAvrestiPotutoFare,
+    ).slice(0, 6);
+    const whatToChange = asStringArray(parsed.data.whatToChange ?? parsed.data.cosaCambiare).slice(0, 6);
+    const nextSteps = asStringArray(parsed.data.nextSteps ?? parsed.data.prossimiPassi).slice(0, 6);
+
+    if (!whatCouldHaveDone.length && !whatToChange.length && !nextSteps.length) return null;
 
     const topics =
       kind === "checkin"
         ? (["tentazione", "padronanza", "pornografia", "rinnovare_mente"] as const)
         : (["tentazione", "rinnovare_mente", "amare_bene", "padronanza"] as const);
 
-    // Ancora le fonti al catalogo ufficiale (niente URL inventati dal modello)
     const sources = pickCoachSources([...topics]);
 
     return {
       mode,
       providerLabel: label,
-      summary: parsed.data.summary.trim(),
-      whatCouldHaveDone: parsed.data.whatCouldHaveDone.map((s) => s.trim()).filter(Boolean).slice(0, 6),
-      whatToChange: parsed.data.whatToChange.map((s) => s.trim()).filter(Boolean).slice(0, 6),
-      nextSteps: parsed.data.nextSteps.map((s) => s.trim()).filter(Boolean).slice(0, 6),
+      summary,
+      whatCouldHaveDone: whatCouldHaveDone.length
+        ? whatCouldHaveDone
+        : ["Prepara una protezione concreta per il momento di rischio più frequente."],
+      whatToChange: whatToChange.length
+        ? whatToChange
+        : ["Rendi ripetibile una sola abitudine buona, invece di cambiare tutto insieme."],
+      nextSteps: nextSteps.length
+        ? nextSteps
+        : ["Apri una fonte JW.org consigliata e applica un solo punto oggi."],
       sources,
       disclaimer: coachDisclaimer(),
     };
