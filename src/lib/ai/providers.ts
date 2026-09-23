@@ -37,29 +37,45 @@ export async function chatWithAvailableProvider(
   messages: ChatMessage[],
 ): Promise<ProviderChatResult | null> {
   if (hasGroq()) {
-    const model = process.env.GROQ_MODEL?.trim() || "llama-3.3-70b-versatile";
-    const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model,
-        messages,
-        temperature: 0.4,
-      }),
-    });
-    if (!res.ok) {
-      const detail = (await res.text()).slice(0, 240);
-      throw new Error(`Groq error ${res.status}: ${detail}`);
+    const configured = process.env.GROQ_MODEL?.trim();
+    const candidates = [
+      configured,
+      "openai/gpt-oss-20b",
+      "openai/gpt-oss-120b",
+      "llama-3.3-70b-versatile",
+      "llama-3.1-8b-instant",
+      "meta-llama/llama-4-scout-17b-16e-instruct",
+    ].filter((m, i, arr): m is string => Boolean(m) && arr.indexOf(m) === i);
+
+    let lastError = "Groq: nessun modello disponibile";
+    for (const model of candidates) {
+      const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model,
+          messages,
+          temperature: 0.4,
+        }),
+      });
+      if (!res.ok) {
+        const detail = (await res.text()).slice(0, 240);
+        lastError = `Groq error ${res.status} (${model}): ${detail}`;
+        // Prova il modello successivo se non trovato / non autorizzato
+        if (res.status === 404 || res.status === 403) continue;
+        throw new Error(lastError);
+      }
+      const payload = (await res.json()) as { choices?: Array<{ message?: { content?: string } }> };
+      return {
+        mode: "groq",
+        label: `Groq · ${model}`,
+        content: payload.choices?.[0]?.message?.content ?? "{}",
+      };
     }
-    const payload = (await res.json()) as { choices?: Array<{ message?: { content?: string } }> };
-    return {
-      mode: "groq",
-      label: `Groq · ${model}`,
-      content: payload.choices?.[0]?.message?.content ?? "{}",
-    };
+    throw new Error(lastError);
   }
 
   if (hasGemini()) {
