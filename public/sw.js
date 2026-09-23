@@ -1,5 +1,6 @@
-const CACHE = "sig-static-v1";
-const ASSETS = ["/", "/manifest.webmanifest", "/icons/icon-192.png", "/icons/icon-512.png"];
+/* Stiamo in guardia — service worker */
+const CACHE = "sig-static-v2";
+const ASSETS = ["/", "/manifest.webmanifest", "/icons/icon-192.png", "/icons/icon-512.png", "/logo.svg"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(ASSETS)).then(() => self.skipWaiting()));
@@ -7,7 +8,10 @@ self.addEventListener("install", (event) => {
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys().then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k)))).then(() => self.clients.claim()),
+    caches
+      .keys()
+      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
+      .then(() => self.clients.claim()),
   );
 });
 
@@ -28,4 +32,29 @@ self.addEventListener("fetch", (event) => {
       return cached || fetched;
     }),
   );
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  const target = (event.notification.data && event.notification.data.url) || "/";
+  event.waitUntil(
+    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((clientList) => {
+      for (const client of clientList) {
+        if ("focus" in client) {
+          if ("navigate" in client && typeof client.navigate === "function") {
+            return client.navigate(target).then((c) => (c && "focus" in c ? c.focus() : client.focus()));
+          }
+          return client.focus();
+        }
+      }
+      if (self.clients.openWindow) return self.clients.openWindow(target);
+    }),
+  );
+});
+
+// Il page poll resta la fonte di verità; qui solo ack per debug futuro.
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "SIG_REMINDERS") {
+    // Schedule ricevuto dall'app (i timer lunghi nel SW non sono affidabili).
+  }
 });

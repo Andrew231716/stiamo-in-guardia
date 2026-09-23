@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Figtree, Fraunces } from "next/font/google";
 import { AppProvider } from "@/components/providers/AppProvider";
 import { ThemeSync } from "@/components/providers/ThemeSync";
+import { ReminderSync } from "@/components/providers/ReminderSync";
 import { AppShell } from "@/components/layout/AppShell";
 import "./globals.css";
 
@@ -48,6 +49,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="min-h-full antialiased">
         <AppProvider>
           <ThemeSync />
+          <ReminderSync />
           <AppShell>{children}</AppShell>
         </AppProvider>
         <script

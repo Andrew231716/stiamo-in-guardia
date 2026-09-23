@@ -12,11 +12,16 @@ import { formatDisplayDate, greetingForHour, lastNDates, todayIso } from "@/lib/
 import { pickVerseForDate } from "@/data/verses";
 import { GUIDE_PHRASES } from "@/data/catalog";
 import { streakWithoutEpisodes } from "@/lib/utils/labels";
+import {
+  getOverdueReminderJobs,
+  markReminderHandled,
+} from "@/lib/notifications/reminders";
 
 export default function DashboardPage() {
   const { ready, data, ensureTodayActivity, getActivityForDate, getPrayerForDate, getCheckinForDate } = useApp();
   const { needed, yesterday } = useYesterdayCheckinNeeded();
   const [loadingActivity, setLoadingActivity] = useState(false);
+  const [dismissedOverdue, setDismissedOverdue] = useState<string[]>([]);
   const date = todayIso();
   const verse = useMemo(() => pickVerseForDate(date), [date]);
   const activity = getActivityForDate(date);
@@ -25,6 +30,13 @@ export default function DashboardPage() {
   const streak = useMemo(
     () => streakWithoutEpisodes(data.checkins, data.preferences.relapseDefinition),
     [data.checkins, data.preferences.relapseDefinition],
+  );
+  const overdue = useMemo(
+    () =>
+      getOverdueReminderJobs(data.preferences.notificationSettings).filter(
+        (j) => !dismissedOverdue.includes(j.id),
+      ),
+    [data.preferences.notificationSettings, dismissedOverdue],
   );
 
   useEffect(() => {
@@ -133,6 +145,32 @@ export default function DashboardPage() {
           </Button>
         </Link>
       </section>
+
+      {overdue.length > 0 ? (
+        <section className="space-y-3 animate-fade-up">
+          {overdue.map((job) => (
+            <div key={job.id} className="quiet-panel border border-accent/40 bg-accent-soft/50">
+              <p className="text-xs uppercase tracking-[0.16em] text-fg-muted">Promemoria</p>
+              <p className="mt-2 text-sm text-fg">{job.body}</p>
+              <Link
+                href={job.url}
+                className="mt-3 inline-block"
+                onClick={() => {
+                  markReminderHandled(job.id);
+                  setDismissedOverdue((ids) => [...ids, job.id]);
+                }}
+              >
+                <Button variant="secondary" className="w-full sm:w-auto">
+                  Apri
+                </Button>
+              </Link>
+            </div>
+          ))}
+          <p className="text-center text-xs text-fg-muted">
+            Per le notifiche di sistema: Altro → Promemoria → Attiva, poi «Invia notifica di prova».
+          </p>
+        </section>
+      ) : null}
 
       <section className="space-y-5 animate-fade-up" style={{ animationDelay: "80ms" }}>
         <div className="quiet-panel">

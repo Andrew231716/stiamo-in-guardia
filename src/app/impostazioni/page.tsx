@@ -6,7 +6,12 @@ import { useApp } from "@/components/providers/AppProvider";
 import { Button } from "@/components/ui/Button";
 import { Card, SectionTitle } from "@/components/ui/Card";
 import { GUIDE_PHRASES, VULNERABLE_HOUR_OPTIONS } from "@/data/catalog";
-import { requestNotificationPermission, scheduleLocalReminders } from "@/lib/notifications/reminders";
+import {
+  getNotificationPermission,
+  requestNotificationPermission,
+  scheduleLocalReminders,
+  sendTestNotification,
+} from "@/lib/notifications/reminders";
 
 export default function ImpostazioniPage() {
   const { ready, data } = useApp();
@@ -38,6 +43,9 @@ function ImpostazioniForm({ initialName }: { initialName: string }) {
   const [limitations, setLimitations] = useState(data.preferences.physicalLimitations);
   const [message, setMessage] = useState("");
   const [notifMsg, setNotifMsg] = useState("");
+  const [perm, setPerm] = useState(() =>
+    typeof window === "undefined" ? ("unsupported" as const) : getNotificationPermission(),
+  );
 
   const prefs = data.preferences;
 
@@ -275,8 +283,19 @@ function ImpostazioniForm({ initialName }: { initialName: string }) {
       <Card>
         <h3 className="font-semibold">Promemoria</h3>
         <p className="mt-1 text-sm text-fg-muted">
-          Testi discreti, senza dettagli sensibili sulla schermata di blocco. Funzionano al meglio con l&apos;app aperta o
-          installata come PWA.
+          Testi discreti, senza dettagli sensibili. Su telefono: installa l&apos;app sulla schermata Home e concedi il
+          permesso notifiche. I promemoria partono in modo affidabile mentre l&apos;app è aperta o in memoria; se era
+          chiusa, al prossimo apertura ricevi quelli scaduti (catch-up).
+        </p>
+        <p className="mt-2 text-xs text-fg-muted">
+          Stato permesso:{" "}
+          {perm === "granted"
+            ? "concesso"
+            : perm === "denied"
+              ? "negato (controlla le impostazioni del browser/sistema)"
+              : perm === "unsupported"
+                ? "non supportato su questo browser"
+                : "non ancora chiesto"}
         </p>
         <div className="mt-3 space-y-3 text-sm">
           {(
@@ -323,19 +342,41 @@ function ImpostazioniForm({ initialName }: { initialName: string }) {
           variant="secondary"
           onClick={async () => {
             const permission = await requestNotificationPermission();
-            if (permission !== "granted") {
-              setNotifMsg("Permesso notifiche non concesso. Nessuna notifica è stata inviata.");
+            setPerm(permission);
+            if (permission === "unsupported") {
+              setNotifMsg("Questo browser non supporta le notifiche.");
               return;
             }
-            const scheduled = scheduleLocalReminders(prefs.notificationSettings);
+            if (permission !== "granted") {
+              setNotifMsg(
+                "Permesso notifiche non concesso. Su iPhone: Impostazioni → Safari/app → Notifiche. Su Android: icona lucchetto del sito → Notifiche.",
+              );
+              return;
+            }
+            const scheduled = await scheduleLocalReminders(prefs.notificationSettings);
             setNotifMsg(
               scheduled
-                ? "Promemoria locali programmati in questa sessione del browser."
+                ? "Promemoria attivati. Riceverai una notifica all'orario scelto se l'app è aperta o in memoria; altrimenti al prossimo avvio."
                 : "Impossibile programmare i promemoria in questo ambiente.",
             );
           }}
         >
-          Attiva / aggiorna promemoria locali
+          Attiva / aggiorna promemoria
+        </Button>
+        <Button
+          className="mt-2 w-full"
+          variant="ghost"
+          onClick={async () => {
+            const result = await sendTestNotification();
+            setPerm(getNotificationPermission());
+            if (result === "ok") setNotifMsg("Notifica di prova inviata. Controlla il centro notifiche.");
+            else if (result === "denied")
+              setNotifMsg("Permesso negato: abilita le notifiche per questo sito nelle impostazioni del sistema.");
+            else if (result === "unsupported") setNotifMsg("Notifiche non supportate su questo browser.");
+            else setNotifMsg("Invio della notifica di prova non riuscito.");
+          }}
+        >
+          Invia notifica di prova
         </Button>
         {notifMsg ? <p className="mt-2 text-sm text-fg-muted">{notifMsg}</p> : null}
       </Card>
