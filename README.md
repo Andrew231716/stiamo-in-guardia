@@ -39,7 +39,17 @@ GEMINI_API_KEY=
 - Senza Supabase: l’app usa solo IndexedDB sul dispositivo.
 - Senza chiavi AI cloud: il **coach locale** analizza comunque check-in e attività (gratuito, sul dispositivo).
 - Con `GROQ_API_KEY` (consigliato, piano gratuito su [console.groq.com](https://console.groq.com)) o `GEMINI_API_KEY`, l’analisi può usare il modello cloud con consenso esplicito.
+- Per i **promemoria push** (anche a app chiusa): `NEXT_PUBLIC_VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `CRON_SECRET`, `BLOB_READ_WRITE_TOKEN` (Vercel Blob).
 - **Non** mettere mai la `service_role` key nel client.
+
+## Promemoria push
+
+1. Genera chiavi VAPID (`npx web-push generate-vapid-keys`) e impostale su Vercel.
+2. Collega uno store **Vercel Blob** (crea `BLOB_READ_WRITE_TOKEN`).
+3. Imposta `CRON_SECRET` e `vercel.json` (cron Vercel; sul piano Hobby al massimo un paio di volte al giorno).
+4. Sul telefono: installa la PWA sulla Home → Impostazioni → **Attiva promemoria push** → **Invia push di prova**.
+
+Su iPhone le push web funzionano solo dall’icona Home (iOS 16.4+), non dalla scheda Safari.
 
 ## Supabase
 
@@ -66,7 +76,7 @@ Le policy RLS garantiscono che ogni utente legga/scriva solo i propri dati.
 - Fonti spirituali (JW.org / WOL) e cliniche ufficiali
 - Coach AI su attività e check-in (locale gratis + cloud opzionale, fonti JW.org e siti ufficiali di psicologia)
 - Export / import / cancellazione dati
-- Promemoria locali discreti
+- Promemoria **Web Push** discreti (anche a app chiusa, dopo installazione PWA)
 
 ## Test
 

@@ -1,5 +1,5 @@
 /* Stiamo in guardia — service worker */
-const CACHE = "sig-static-v2";
+const CACHE = "sig-static-v3";
 const ASSETS = ["/", "/manifest.webmanifest", "/icons/icon-192.png", "/icons/icon-512.png", "/logo.svg"];
 
 self.addEventListener("install", (event) => {
@@ -34,6 +34,44 @@ self.addEventListener("fetch", (event) => {
   );
 });
 
+self.addEventListener("push", (event) => {
+  let payload = {
+    title: "Stiamo in guardia",
+    body: "Hai un promemoria discreto.",
+    url: "/",
+    tag: "sig-push",
+  };
+  try {
+    if (event.data) {
+      const data = event.data.json();
+      payload = {
+        title: typeof data.title === "string" ? data.title : payload.title,
+        body: typeof data.body === "string" ? data.body : payload.body,
+        url: typeof data.url === "string" ? data.url : payload.url,
+        tag: typeof data.tag === "string" ? data.tag : payload.tag,
+      };
+    }
+  } catch {
+    try {
+      const text = event.data && event.data.text();
+      if (text) payload.body = text;
+    } catch {
+      /* keep default */
+    }
+  }
+
+  event.waitUntil(
+    self.registration.showNotification(payload.title, {
+      body: payload.body,
+      icon: "/icons/icon-192.png",
+      badge: "/icons/icon-192.png",
+      tag: payload.tag,
+      renotify: true,
+      data: { url: payload.url },
+    }),
+  );
+});
+
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
   const target = (event.notification.data && event.notification.data.url) || "/";
@@ -52,9 +90,45 @@ self.addEventListener("notificationclick", (event) => {
   );
 });
 
-// Il page poll resta la fonte di verità; qui solo ack per debug futuro.
+self.addEventListener("pushsubscriptionchange", (event) => {
+  event.waitUntil(
+    (async () => {
+      try {
+        const sub = await self.registration.pushManager.subscribe(event.newOptions || { userVisibleOnly: true });
+        await fetch("/api/push/subscribe", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            endpoint: sub.endpoint,
+            keys: {
+              p256dh: arrayBufferToBase64Url(sub.getKey("p256dh")),
+              auth: arrayBufferToBase64Url(sub.getKey("auth")),
+            },
+            timezone: "Europe/Rome",
+            settings: {
+              dailyActivity: { enabled: true, time: "08:00" },
+              checkIn: { enabled: true, time: "09:00" },
+              prayer: { enabled: true, time: "21:00" },
+            },
+          }),
+        });
+      } catch {
+        /* ignore */
+      }
+    })(),
+  );
+});
+
+function arrayBufferToBase64Url(buf) {
+  if (!buf) return "";
+  const bytes = new Uint8Array(buf);
+  let binary = "";
+  for (let i = 0; i < bytes.length; i += 1) binary += String.fromCharCode(bytes[i]);
+  return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
 self.addEventListener("message", (event) => {
   if (event.data && event.data.type === "SIG_REMINDERS") {
-    // Schedule ricevuto dall'app (i timer lunghi nel SW non sono affidabili).
+    // Orari gestiti server-side via Web Push; ack solo per compatibilità.
   }
 });

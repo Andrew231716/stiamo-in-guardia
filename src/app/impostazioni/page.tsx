@@ -8,10 +8,16 @@ import { Card, SectionTitle } from "@/components/ui/Card";
 import { GUIDE_PHRASES, VULNERABLE_HOUR_OPTIONS } from "@/data/catalog";
 import {
   getNotificationPermission,
-  requestNotificationPermission,
   scheduleLocalReminders,
   sendTestNotification,
 } from "@/lib/notifications/reminders";
+import {
+  disableWebPush,
+  enableWebPush,
+  isPushSupported,
+  sendPushTestNotification,
+  werePushRemindersArmed,
+} from "@/lib/push/client";
 
 export default function ImpostazioniPage() {
   const { ready, data } = useApp();
@@ -43,9 +49,14 @@ function ImpostazioniForm({ initialName }: { initialName: string }) {
   const [limitations, setLimitations] = useState(data.preferences.physicalLimitations);
   const [message, setMessage] = useState("");
   const [notifMsg, setNotifMsg] = useState("");
+  const [pushBusy, setPushBusy] = useState(false);
+  const [pushArmed, setPushArmed] = useState(() =>
+    typeof window === "undefined" ? false : werePushRemindersArmed(),
+  );
   const [perm, setPerm] = useState(() =>
     typeof window === "undefined" ? ("unsupported" as const) : getNotificationPermission(),
   );
+  const pushOk = typeof window !== "undefined" && isPushSupported();
 
   const prefs = data.preferences;
 
@@ -281,21 +292,27 @@ function ImpostazioniForm({ initialName }: { initialName: string }) {
       </Card>
 
       <Card>
-        <h3 className="font-semibold">Promemoria</h3>
+        <h3 className="font-semibold">Promemoria push</h3>
         <p className="mt-1 text-sm text-fg-muted">
-          Testi discreti, senza dettagli sensibili. Su telefono: installa l&apos;app sulla schermata Home e concedi il
-          permesso alle notifiche. I promemoria partono in modo affidabile mentre l&apos;app è aperta o in memoria; se
-          era chiusa, alla prossima apertura ricevi quelli scaduti (catch-up).
+          Testi discreti, senza dettagli sensibili. Per riceverli anche a app chiusa: installa l&apos;app sulla
+          schermata Home, apri l&apos;icona (non solo Safari/Chrome), poi attiva i promemoria push qui sotto.
         </p>
+        <ol className="mt-2 list-decimal space-y-1 pl-5 text-xs text-fg-muted">
+          <li>Su iPhone: Condividi → Aggiungi a Home → apri dall&apos;icona (iOS 16.4+).</li>
+          <li>Su Android: menu browser → Installa app / Aggiungi a Home.</li>
+          <li>Consenti le notifiche quando richiesto.</li>
+        </ol>
         <p className="mt-2 text-xs text-fg-muted">
-          Stato permesso:{" "}
+          Permesso:{" "}
           {perm === "granted"
             ? "concesso"
             : perm === "denied"
-              ? "negato (controlla le impostazioni del browser/sistema)"
+              ? "negato (Impostazioni sistema → Notifiche)"
               : perm === "unsupported"
                 ? "non supportato su questo browser"
                 : "non ancora chiesto"}
+          {" · "}
+          Push: {pushArmed ? "attivi su questo dispositivo" : pushOk ? "non ancora attivati" : "non supportati"}
         </p>
         <div className="mt-3 space-y-3 text-sm">
           {(
@@ -339,45 +356,103 @@ function ImpostazioniForm({ initialName }: { initialName: string }) {
         </div>
         <Button
           className="mt-3 w-full"
-          variant="secondary"
+          disabled={pushBusy}
           onClick={async () => {
-            const permission = await requestNotificationPermission();
-            setPerm(permission);
-            if (permission === "unsupported") {
-              setNotifMsg("Questo browser non supporta le notifiche.");
-              return;
-            }
-            if (permission !== "granted") {
+            setPushBusy(true);
+            try {
+              const result = await enableWebPush(prefs.notificationSettings);
+              setPerm(getNotificationPermission());
+              if (!result.ok) {
+                setPushArmed(false);
+                if (result.reason === "unsupported") {
+                  setNotifMsg(
+                    "Push non supportato. Su iPhone usa l'app dalla Home (non Safari). Su Android usa Chrome e installa la PWA.",
+                  );
+                } else if (result.reason === "denied") {
+                  setNotifMsg(
+                    "Permesso notifiche negato. Abilitalo nelle impostazioni del telefono per questa app.",
+                  );
+                } else if (result.reason === "no_vapid") {
+                  setNotifMsg("Configurazione push incompleta sul server. Riprova tra poco.");
+                } else {
+                  setNotifMsg("Attivazione push non riuscita. Riprova dopo aver installato l'app sulla Home.");
+                }
+                return;
+              }
+              await scheduleLocalReminders(prefs.notificationSettings);
+              setPushArmed(true);
               setNotifMsg(
-                "Permesso notifiche non concesso. Su iPhone: Impostazioni → Safari/app → Notifiche. Su Android: icona lucchetto del sito → Notifiche.",
+                "Promemoria push attivati. Arriveranno agli orari scelti anche a app chiusa (entro pochi minuti).",
               );
-              return;
+            } finally {
+              setPushBusy(false);
             }
-            const scheduled = await scheduleLocalReminders(prefs.notificationSettings);
-            setNotifMsg(
-              scheduled
-                ? "Promemoria attivati. Riceverai una notifica all'orario scelto se l'app è aperta o in memoria; altrimenti al prossimo avvio."
-                : "Impossibile programmare i promemoria in questo ambiente.",
-            );
           }}
         >
-          Attiva / aggiorna promemoria
+          {pushBusy ? "Attivazione…" : "Attiva promemoria push"}
+        </Button>
+        <Button
+          className="mt-2 w-full"
+          variant="secondary"
+          disabled={pushBusy}
+          onClick={async () => {
+            setPushBusy(true);
+            try {
+              const result = await sendPushTestNotification(prefs.notificationSettings);
+              setPerm(getNotificationPermission());
+              setPushArmed(werePushRemindersArmed());
+              if (result === "ok") {
+                setNotifMsg(
+                  "Push di prova inviata. Chiudi l'app e controlla il centro notifiche: se arriva, i promemoria funzionano a app chiusa.",
+                );
+              } else if (result === "denied") {
+                setNotifMsg("Permesso negato: abilita le notifiche per questa app.");
+              } else if (result === "unsupported") {
+                setNotifMsg("Push non supportato su questo browser. Installa l'app sulla Home.");
+              } else {
+                setNotifMsg("Invio push di prova non riuscito. Attiva prima i promemoria push.");
+              }
+            } finally {
+              setPushBusy(false);
+            }
+          }}
+        >
+          Invia push di prova
         </Button>
         <Button
           className="mt-2 w-full"
           variant="ghost"
+          disabled={pushBusy}
           onClick={async () => {
-            const result = await sendTestNotification();
+            const local = await sendTestNotification();
             setPerm(getNotificationPermission());
-            if (result === "ok") setNotifMsg("Notifica di prova inviata. Controlla il centro notifiche.");
-            else if (result === "denied")
-              setNotifMsg("Permesso negato: abilita le notifiche per questo sito nelle impostazioni del sistema.");
-            else if (result === "unsupported") setNotifMsg("Notifiche non supportate su questo browser.");
-            else setNotifMsg("L'invio della notifica di prova non è riuscito.");
+            if (local === "ok") setNotifMsg("Notifica locale di prova inviata (funziona solo con app aperta).");
+            else if (local === "denied") setNotifMsg("Permesso notifiche negato.");
+            else if (local === "unsupported") setNotifMsg("Notifiche non supportate.");
+            else setNotifMsg("Notifica locale non riuscita.");
           }}
         >
-          Invia notifica di prova
+          Prova notifica locale
         </Button>
+        {pushArmed ? (
+          <Button
+            className="mt-2 w-full"
+            variant="ghost"
+            disabled={pushBusy}
+            onClick={async () => {
+              setPushBusy(true);
+              try {
+                await disableWebPush();
+                setPushArmed(false);
+                setNotifMsg("Promemoria push disattivati su questo dispositivo.");
+              } finally {
+                setPushBusy(false);
+              }
+            }}
+          >
+            Disattiva push su questo dispositivo
+          </Button>
+        ) : null}
         {notifMsg ? <p className="mt-2 text-sm text-fg-muted">{notifMsg}</p> : null}
       </Card>
 
