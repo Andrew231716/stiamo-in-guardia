@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useApp } from "@/components/providers/AppProvider";
 import { Button } from "@/components/ui/Button";
 import { Card, SectionTitle } from "@/components/ui/Card";
@@ -23,7 +24,7 @@ function ActivityForm({ activity }: { activity: DailyActivityRecord }) {
     <div className="space-y-4 animate-fade-up">
       <SectionTitle
         title={activity.title}
-        subtitle={`${ACTIVITY_CATEGORY_LABELS[activity.category]} · circa ${activity.durationMinutes} minuti`}
+        subtitle={`${ACTIVITY_CATEGORY_LABELS[activity.category]} · circa ${activity.durationMinutes} min`}
       />
 
       {limitations ? (
@@ -40,28 +41,37 @@ function ActivityForm({ activity }: { activity: DailyActivityRecord }) {
       </Card>
 
       <Card>
-        <h3 className="font-semibold">Introduzione</h3>
-        <p className="mt-2 text-fg-muted">{activity.introduction}</p>
-      </Card>
-
-      <Card>
-        <h3 className="font-semibold">Scrittura o principio</h3>
-        <p className="mt-1 text-sm text-fg-muted">Tocca un riferimento per aprirlo in JW Library.</p>
-        <ScriptureList references={activity.scriptureReferences} />
-      </Card>
-
-      <Card>
-        <h3 className="font-semibold">Istruzioni pratiche</h3>
+        <h3 className="font-semibold">Cosa fare</h3>
         <ol className="mt-2 list-decimal space-y-2 pl-5 text-fg-muted">
           {activity.instructions.map((step) => (
             <li key={step}>{step}</li>
           ))}
         </ol>
+        <p className="mt-4 text-sm font-medium text-fg">Azione di oggi</p>
+        <p className="mt-1 text-fg-muted">{activity.dailyAction}</p>
       </Card>
+
+      <details className="rounded-[var(--radius)] border border-line bg-bg-elevated/60 px-4 py-3">
+        <summary className="cursor-pointer font-semibold">Contesto e Scrittura</summary>
+        <p className="mt-3 text-sm text-fg-muted">{activity.introduction}</p>
+        <div className="mt-3">
+          <ScriptureList references={activity.scriptureReferences} />
+        </div>
+        {activity.sourceReferences?.length ? (
+          <ul className="mt-3 space-y-2 text-sm text-fg-muted">
+            {activity.sourceReferences.map((s) => (
+              <li key={`${s.organization}-${s.title}`}>
+                <strong>{s.title}</strong> — {s.organization}
+                {s.note ? `. ${s.note}` : ""}
+              </li>
+            ))}
+          </ul>
+        ) : null}
+      </details>
 
       <Card>
         <label className="font-semibold" htmlFor="response">
-          Risposta personale
+          La tua risposta
         </label>
         <p className="mt-1 text-sm text-fg-muted">{activity.writingPrompt}</p>
         <textarea
@@ -72,37 +82,15 @@ function ActivityForm({ activity }: { activity: DailyActivityRecord }) {
         />
       </Card>
 
-      <Card>
-        <label className="font-semibold" htmlFor="reflection">
-          Domanda di riflessione
-        </label>
-        <p className="mt-1 text-sm text-fg-muted">{activity.reflectionQuestion}</p>
+      <details className="rounded-[var(--radius)] border border-line bg-bg-elevated/60 px-4 py-3" open={Boolean(reflection)}>
+        <summary className="cursor-pointer font-semibold">Riflessione (facoltativa)</summary>
+        <p className="mt-3 text-sm text-fg-muted">{activity.reflectionQuestion}</p>
         <textarea
-          id="reflection"
           className="mt-3 min-h-24 w-full rounded-2xl border border-line bg-bg px-4 py-3"
           value={reflection}
           onChange={(e) => setReflection(e.target.value)}
         />
-      </Card>
-
-      <Card>
-        <h3 className="font-semibold">Azione concreta di oggi</h3>
-        <p className="mt-2 text-fg-muted">{activity.dailyAction}</p>
-      </Card>
-
-      {activity.sourceReferences?.length ? (
-        <Card>
-          <h3 className="font-semibold">Fonti / riferimenti</h3>
-          <ul className="mt-2 space-y-2 text-sm text-fg-muted">
-            {activity.sourceReferences.map((s) => (
-              <li key={`${s.organization}-${s.title}`}>
-                <strong>{s.title}</strong> — {s.organization}
-                {s.note ? `. ${s.note}` : ""}
-              </li>
-            ))}
-          </ul>
-        </Card>
-      ) : null}
+      </details>
 
       <div className="grid gap-2">
         <Button
@@ -137,9 +125,7 @@ function ActivityForm({ activity }: { activity: DailyActivityRecord }) {
           className="w-full"
           disabled={replacing || Boolean(activity.completedAt)}
           onClick={async () => {
-            if (!confirm("Sostituire l'attività di oggi con un'altra? La bozza attuale non verrà tenuta.")) {
-              return;
-            }
+            if (!confirm("Cambiare attività di oggi?")) return;
             setReplacing(true);
             try {
               await replaceTodayActivity();
@@ -148,14 +134,22 @@ function ActivityForm({ activity }: { activity: DailyActivityRecord }) {
             }
           }}
         >
-          {replacing ? "Cambio in corso…" : "Cambia attività di oggi"}
+          {replacing ? "Cambio…" : "Cambia attività"}
         </Button>
       </div>
+
       {saved ? (
-        <p className="text-center text-sm text-ok">Attività registrata. Grazie per il tempo dedicato.</p>
+        <>
+          <p className="text-center text-sm text-ok">Attività completata.</p>
+          <Link href="/">
+            <Button variant="secondary" className="w-full">
+              Torna a Oggi
+            </Button>
+          </Link>
+        </>
       ) : null}
       {draftSaved && !saved ? (
-        <p className="text-center text-sm text-ok">Bozza salvata. Puoi riprendere quando vuoi.</p>
+        <p className="text-center text-sm text-ok">Bozza salvata.</p>
       ) : null}
 
       {(saved || draftSaved || response.trim() || reflection.trim()) && (

@@ -18,10 +18,10 @@ export function Onboarding() {
     setHours((prev) => (prev.includes(id) ? prev.filter((h) => h !== id) : [...prev, id]));
   };
 
-  const finish = async () => {
+  const finish = async (withHours: boolean) => {
     await updatePreferences({
       displayName: name.trim() || data.preferences.displayName,
-      vulnerableHours: hours,
+      vulnerableHours: withHours ? hours : data.preferences.vulnerableHours,
       onboardingCompleted: true,
     });
   };
@@ -42,8 +42,7 @@ export function Onboarding() {
               Benvenuto
             </h2>
             <p className="mt-2 text-sm text-fg-muted">
-              Questo è un diario personale per restare desto: attività, check-in, preghiera e fonti spirituali. I dati
-              restano sul tuo dispositivo.
+              Diario personale: attività, check-in e preghiera. I dati restano sul tuo dispositivo.
             </p>
             <p className="mt-3 text-sm text-brand">{GUIDE_PHRASES.impulse}</p>
             <label className="mt-5 block text-sm font-semibold" htmlFor="onb-name">
@@ -57,21 +56,23 @@ export function Onboarding() {
               placeholder="Es. fratello, o il tuo nome"
               autoComplete="nickname"
             />
-            <Button className="mt-5 w-full" onClick={() => setStep(1)}>
-              Continua
-            </Button>
+            <div className="mt-5 grid gap-2">
+              <Button className="w-full" onClick={() => setStep(1)}>
+                Continua
+              </Button>
+              <Button variant="ghost" className="w-full" onClick={() => void finish(false)}>
+                Inizia subito
+              </Button>
+            </div>
           </>
         ) : null}
 
         {step === 1 ? (
           <>
             <h2 id="onboarding-title" className="mt-5 font-[family-name:var(--font-fraunces)] text-2xl text-brand-deep">
-              Orari più vulnerabili
+              Quando sei più vulnerabile?
             </h2>
-            <p className="mt-2 text-sm text-fg-muted">
-              Nei momenti in cui sei meno lucido, prepara in anticipo telefono e ambiente. Puoi cambiare dopo nelle
-              impostazioni.
-            </p>
+            <p className="mt-2 text-sm text-fg-muted">Facoltativo. Puoi cambiarlo dopo in Altro.</p>
             <div className="mt-4 flex flex-wrap gap-2">
               {VULNERABLE_HOUR_OPTIONS.map((opt) => (
                 <button
@@ -87,30 +88,15 @@ export function Onboarding() {
                 </button>
               ))}
             </div>
+            <p className="mt-4 text-xs text-fg-muted">{GUIDE_PHRASES.disclaimer}</p>
             <div className="mt-5 grid gap-2">
-              <Button className="w-full" onClick={() => setStep(2)}>
-                Continua
+              <Button className="w-full" onClick={() => void finish(true)}>
+                Inizia
               </Button>
-              <Button variant="ghost" className="w-full" onClick={() => setStep(2)}>
-                Salta per ora
+              <Button variant="ghost" className="w-full" onClick={() => void finish(false)}>
+                Salta
               </Button>
             </div>
-          </>
-        ) : null}
-
-        {step === 2 ? (
-          <>
-            <h2 id="onboarding-title" className="mt-5 font-[family-name:var(--font-fraunces)] text-2xl text-brand-deep">
-              Due cose da ricordare
-            </h2>
-            <ul className="mt-3 space-y-3 text-sm text-fg-muted">
-              <li>{GUIDE_PHRASES.loveGoodHateEvil}</li>
-              <li>{GUIDE_PHRASES.patienceFocus}</li>
-            </ul>
-            <p className="mt-4 text-xs text-fg-muted">{GUIDE_PHRASES.disclaimer}</p>
-            <Button className="mt-5 w-full" onClick={() => void finish()}>
-              Inizia
-            </Button>
           </>
         ) : null}
       </div>

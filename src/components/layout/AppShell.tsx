@@ -2,15 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  BookOpen,
-  CalendarCheck,
-  Heart,
-  Home,
-  Moon,
-  Settings,
-  Sparkles,
-} from "lucide-react";
+import { BookOpen, CalendarCheck, Home, Moon, Settings, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils/date";
 import { useApp } from "@/components/providers/AppProvider";
 import { BrandLockup } from "@/components/brand/Logo";
@@ -22,15 +14,15 @@ const links = [
   { href: "/attivita", label: "Attività", icon: Sparkles },
   { href: "/check-in", label: "Check-in", icon: CalendarCheck },
   { href: "/preghiera", label: "Preghiera", icon: BookOpen },
-  { href: "/spiritualita", label: "Spirito", icon: Heart },
   { href: "/impostazioni", label: "Altro", icon: Settings },
 ];
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const { data } = useApp();
+  const { data, updatePreferences } = useApp();
   const tired = data.preferences.tiredMode;
   const isHome = pathname === "/";
+  const isHelp = pathname.startsWith("/stanchezza") || pathname.startsWith("/frustrazione");
 
   return (
     <div className="relative mx-auto flex min-h-dvh w-full max-w-3xl flex-col px-4 pb-28 pt-5 sm:px-6">
@@ -46,13 +38,21 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <BrandLockup size="sm" />
           </Link>
         )}
-        {tired ? (
+        {!isHelp ? (
           <Link
             href="/stanchezza"
-            className="ml-auto inline-flex items-center gap-2 rounded-2xl bg-accent-soft px-3 py-2 text-sm text-[color:var(--brand-deep)] animate-soft-pulse"
+            onClick={() => {
+              if (!tired) void updatePreferences({ tiredMode: true });
+            }}
+            className={cn(
+              "ml-auto inline-flex items-center gap-2 rounded-2xl px-3 py-2 text-sm",
+              tired
+                ? "bg-accent-soft text-[color:var(--brand-deep)] animate-soft-pulse"
+                : "border border-line bg-bg-elevated/80 text-fg-muted hover:text-fg",
+            )}
           >
             <Moon className="h-4 w-4" />
-            Modalità semplice
+            {tired ? "Modalità semplice" : "Aiuto ora"}
           </Link>
         ) : null}
       </header>
@@ -61,7 +61,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         aria-label="Navigazione principale"
         className="fixed inset-x-0 bottom-0 z-40 border-t border-line/80 bg-bg-elevated/92 backdrop-blur-md"
       >
-        <ul className="mx-auto grid max-w-3xl grid-cols-6 gap-1 px-2 py-2">
+        <ul className="mx-auto grid max-w-3xl grid-cols-5 gap-1 px-2 py-2">
           {links.map(({ href, label, icon: Icon }) => {
             const active = href === "/" ? pathname === "/" : pathname.startsWith(href);
             return (
